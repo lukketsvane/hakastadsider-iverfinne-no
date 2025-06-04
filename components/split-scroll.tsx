@@ -1,9 +1,8 @@
-// FILE: components/split-scroll.tsx
 "use client"
 
 import { useEffect, useRef, useState, useCallback } from "react"
 import Image from "next/image"
-import { Play, Pause, Volume2, VolumeX, ShoppingBag, Info, Instagram, Facebook, MapPin } from "lucide-react"
+import { Play, Pause, Volume2, VolumeX, ShoppingBag, Instagram, Facebook, MapPin } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -54,7 +53,7 @@ const sections: SectionDefinition[] = [
     id: "heim",
     left: {
       type: "image",
-      content: "/placeholder.svg?height=800&width=600&text=Hardanger+Landscape",
+      content: "/images/hardanger-landscape.png",
       alt: "Hardanger med epleblom og fjord",
       parallax: true,
     },
@@ -81,7 +80,7 @@ const sections: SectionDefinition[] = [
     },
     right: {
       type: "image",
-      content: "/placeholder.svg?height=800&width=600&text=Bee+on+Apple+Blossom",
+      content: "/images/bee-on-blossom.jpeg",
       alt: "Bie på epleblom",
       parallax: true,
     },
@@ -90,7 +89,7 @@ const sections: SectionDefinition[] = [
     id: "garden",
     left: {
       type: "image",
-      content: "/placeholder.svg?height=800&width=600&text=Farmer+Portrait",
+      content: "/images/wine-tasting.png",
       alt: "Gardbrukar blant epleblom",
       parallax: true,
     },
@@ -109,7 +108,7 @@ const sections: SectionDefinition[] = [
     isDark: true,
     left: {
       type: "image",
-      content: "/placeholder.svg?height=800&width=600&text=Orchard+Visitors",
+      content: "/images/apple-products.png",
       alt: "Besøkande i eplehagen",
       parallax: true,
     },
@@ -132,7 +131,7 @@ const sections: SectionDefinition[] = [
       product: {
         name: "Ulvik Frukt & Cideri Sider Frå Hardanger Tradisjon",
         category: "SIDER",
-        bottleImage: "/placeholder.svg?height=900&width=300&text=Tradisjon+Bottle",
+        bottleImage: "/images/tradisjon.png",
         origin: "Noreg, Vestland, Hardanger",
         description:
           "Saftig med god friskheit, fokusert preg av mogne eple, hint av grøne urter og krydder. Mjuk brus.",
@@ -149,12 +148,6 @@ const sections: SectionDefinition[] = [
           { icon: "FriskhetIcon", text: "FRISKHEIT" },
           { icon: "SødmeIcon", text: "SØDME" },
         ],
-        drinkInfo: [
-          { text: "Drikkeklar, ikkje eigna for lagring" },
-          { text: "Alkohol 8%" },
-          { text: "Sukker 13,2 g/l" },
-          { text: "Syre 6,8 g/l" },
-        ],
       },
     },
     right: { type: "empty-pane-for-single-product" },
@@ -168,7 +161,7 @@ const sections: SectionDefinition[] = [
       product: {
         name: "Ulvik Sider frå Hardanger Gravenstein",
         category: "SIDER",
-        bottleImage: "/placeholder.svg?height=900&width=300&text=Gravenstein+Bottle",
+        bottleImage: "/images/gravenstein.png",
         origin: "Noreg, Vestland, Hardanger",
         description: "Fyldig, vinøs og god sødme. Svakt syrleg, lang ettersmak med smak av mandel.",
         availability: "Kan bestillast til alle butikkar",
@@ -183,13 +176,6 @@ const sections: SectionDefinition[] = [
           { icon: "FyldeIcon", text: "FYLDE" },
           { icon: "FriskhetIcon", text: "FRISKHEIT" },
           { icon: "SødmeIcon", text: "SØDME" },
-        ],
-        drinkInfo: [
-          { text: "Drikkeklar no, men kan òg lagrast" },
-          { text: "Eple (Gul Gravenstein)" },
-          { text: "Alkohol 8%" },
-          { text: "Sukker 9 g/l" },
-          { text: "Syre 6,8 g/l" },
         ],
         productDetailsTable: [
           { label: "Varetype", value: "Sider" },
@@ -219,7 +205,7 @@ const sections: SectionDefinition[] = [
       items: [
         {
           type: "image",
-          content: "/placeholder.svg?height=400&width=120&text=Gravenstein",
+          content: "/images/gravenstein.png",
           alt: "Gravenstein Sider",
           title: "Gravenstein",
           description: "Fyldig, vinøs og god sødme.",
@@ -227,7 +213,7 @@ const sections: SectionDefinition[] = [
         },
         {
           type: "image",
-          content: "/placeholder.svg?height=400&width=120&text=Tradisjon",
+          content: "/images/tradisjon.png",
           alt: "Tradisjon Sider",
           title: "Tradisjon",
           description: "Saftig med god friskheit.",
@@ -235,7 +221,7 @@ const sections: SectionDefinition[] = [
         },
         {
           type: "image",
-          content: "/placeholder.svg?height=400&width=120&text=Stille+Stunder",
+          content: "/images/stille-stunder.png",
           alt: "Stille Stunder",
           title: "Stille Stunder",
           description: "Konsentrert eple.",
@@ -243,7 +229,7 @@ const sections: SectionDefinition[] = [
         },
         {
           type: "image",
-          content: "/placeholder.svg?height=400&width=120&text=Hylleblomsider",
+          content: "/images/hylleblomsider.png",
           alt: "Hylleblomsider",
           title: "Hylleblomsider",
           description: "Søtleg med god syrebalanse.",
@@ -251,7 +237,7 @@ const sections: SectionDefinition[] = [
         },
         {
           type: "image",
-          content: "/placeholder.svg?height=400&width=120&text=Svartsurbaer",
+          content: "/images/svartsurbaer.png",
           alt: "Svartsurbær",
           title: "Svartsurbær",
           description: "Lang ettersmak av eple.",
@@ -259,7 +245,7 @@ const sections: SectionDefinition[] = [
         },
         {
           type: "image",
-          content: "/placeholder.svg?height=400&width=120&text=Eplemost",
+          content: "/images/ulvik-cideri.png",
           alt: "Sider utandørs",
           title: "Eplemost",
           description: "Naturleg eplemost.",
@@ -332,14 +318,48 @@ function SocialMediaFooter() {
   )
 }
 
-const AperitiffIcon = () => <ShoppingBag size={20} className="mr-2 text-gray-600" />
-const SkalldyrIcon = () => <Info size={20} className="mr-2 text-gray-600" />
-const FiskIcon = () => <Info size={20} className="mr-2 text-gray-600" />
-const LystKjøttIcon = () => <Info size={20} className="mr-2 text-gray-600" />
-const FyldeIcon = () => <div className="w-4 h-4 border-2 border-gray-700 rounded-full mr-2"></div>
-const FriskhetIcon = () => <div className="w-4 h-4 border-2 border-gray-700 rounded-full mr-2"></div>
-const SødmeIcon = () => <div className="w-4 h-4 border-2 border-gray-700 rounded-full mr-2"></div>
-const DrikkeIkon = () => <Info size={16} className="mr-1 text-gray-500" />
+// Updated Icon Components with proper SVG icons
+const AperitiffIcon = () => (
+  <div className="w-5 h-5 mr-2 flex-shrink-0">
+    <Image src="/icons/aperitiff.svg" alt="Aperitiff" width={20} height={20} />
+  </div>
+)
+
+const SkalldyrIcon = () => (
+  <div className="w-5 h-5 mr-2 flex-shrink-0">
+    <Image src="/icons/skalldyr.svg" alt="Skalldyr" width={20} height={20} />
+  </div>
+)
+
+const FiskIcon = () => (
+  <div className="w-5 h-5 mr-2 flex-shrink-0">
+    <Image src="/icons/fisk.svg" alt="Fisk" width={20} height={20} />
+  </div>
+)
+
+const LystKjøttIcon = () => (
+  <div className="w-5 h-5 mr-2 flex-shrink-0">
+    <Image src="/icons/eye.svg" alt="Lyst Kjøtt" width={20} height={20} />
+  </div>
+)
+
+const FyldeIcon = () => (
+  <div className="w-5 h-5 mr-2 flex-shrink-0">
+    <Image src="/icons/fylde.svg" alt="Fylde" width={20} height={20} />
+  </div>
+)
+
+const FriskhetIcon = () => (
+  <div className="w-5 h-5 mr-2 flex-shrink-0">
+    <Image src="/icons/friskheit.svg" alt="Friskheit" width={20} height={20} />
+  </div>
+)
+
+const SødmeIcon = () => (
+  <div className="w-5 h-5 mr-2 flex-shrink-0">
+    <Image src="/icons/sodme.svg" alt="Sødme" width={20} height={20} />
+  </div>
+)
 
 const SingleProductShowcase = ({
   product,
@@ -419,31 +439,29 @@ const SingleProductShowcase = ({
             <span>{product.delivery}</span>
           </div>
         </div>
+
         <hr className={cn("my-6", isDarkMode ? "border-gray-700" : "border-gray-300")} />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-          <div>
+
+        {/* Two column layout for taste characteristics */}
+        <div className="grid grid-cols-2 gap-6 text-sm">
+          <div className="space-y-3">
             {product.foodPairings.map((item: any, idx: number) => (
-              <div key={idx} className="flex items-center mb-1">
-                {renderIcon(item.icon)} {item.text}
+              <div key={idx} className="flex items-center">
+                {renderIcon(item.icon)}
+                <span>{item.text}</span>
               </div>
             ))}
           </div>
-          <div>
+          <div className="space-y-3">
             {product.tasteProfile.map((item: any, idx: number) => (
-              <div key={idx} className="flex items-center mb-1">
-                {renderIcon(item.icon)} {item.text}
-              </div>
-            ))}
-          </div>
-          <div className="space-y-1">
-            {product.drinkInfo.map((info: any, idx: number) => (
-              <div key={idx} className="flex items-center text-xs">
-                <DrikkeIkon />
-                {info.text}
+              <div key={idx} className="flex items-center">
+                {renderIcon(item.icon)}
+                <span>{item.text}</span>
               </div>
             ))}
           </div>
         </div>
+
         {product.productDetailsTable && (
           <>
             <hr className={cn("my-6", isDarkMode ? "border-gray-700" : "border-gray-300")} />
@@ -747,25 +765,22 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
         )}
         style={{ scrollSnapType: "y mandatory" }}
       >
-        <div className="fixed right-8 top-1/2 z-30 -translate-y-1/2 transform">
-          <div className="flex flex-col space-y-4">
+        {/* Navigation dots - moved to left side and made less intrusive */}
+        <div className="fixed left-4 top-1/2 z-30 -translate-y-1/2 transform">
+          <div className="flex flex-col space-y-3">
             {sections.map((_, index) => {
               const isActive = index === activeSectionIndex
               const isPassed = index < activeSectionIndex
               const dotBgColor =
-                isActive || isPassed ? "#d97706" : sections[activeSectionIndex]?.isDark ? "#4b5563" : "#d1d5db"
+                isActive || isPassed ? "#d97706" : sections[activeSectionIndex]?.isDark ? "#374151" : "#e5e7eb"
               return (
                 <button
                   key={sections[index].id}
                   onClick={() => scrollToSection(index)}
                   aria-label={`Gå til seksjon ${index + 1}`}
                   className={cn(
-                    "h-3 w-3 rounded-full transition-all duration-500 ease-out border",
-                    isActive ? "ring-2 ring-offset-2 ring-[#d97706]" : "border-transparent",
-                    sections[activeSectionIndex]?.isDark && !isActive && !isPassed ? "ring-gray-600" : "",
-                    sections[activeSectionIndex]?.isDark && !(isActive || isPassed)
-                      ? "border-gray-500"
-                      : "border-gray-400",
+                    "h-2 w-2 rounded-full transition-all duration-500 ease-out border-0 opacity-60 hover:opacity-100",
+                    isActive ? "ring-1 ring-offset-1 ring-[#d97706] opacity-100 scale-125" : "",
                   )}
                   style={{ backgroundColor: dotBgColor }}
                 />
@@ -773,6 +788,7 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
             })}
           </div>
         </div>
+
         {sections.map((section, index) => {
           if (section.fullWidthComponent) {
             return (
