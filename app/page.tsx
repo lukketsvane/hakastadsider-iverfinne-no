@@ -13,6 +13,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [activeSection, setActiveSection] = useState(0) // Track active section
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -55,7 +56,11 @@ export default function Home() {
           alt="Ulvik Frukt & Cideri"
           width={128}
           height={42}
-          className="relative h-auto w-auto transition-all duration-300 hover:scale-102"
+          className={cn(
+            "relative h-auto w-auto transition-all duration-500 hover:scale-102",
+            // Invert logo on dark sections
+            activeSection === 10 ? "filter invert brightness-0 contrast-100" : "",
+          )}
           priority
         />
       </div>
@@ -118,7 +123,7 @@ export default function Home() {
         />
       )}
 
-      <SplitScroll />
+      <SplitScroll setActiveSection={setActiveSection} />
     </main>
   )
 }

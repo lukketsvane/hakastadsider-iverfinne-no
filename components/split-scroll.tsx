@@ -218,56 +218,63 @@ const sections = [
           content: "/images/gravenstein.png",
           alt: "Gravenstein Sider",
           title: "Gravenstein",
-          description: "Fyldig og vinøs med lang ettersmak",
-          price: "8% alkohol",
+          description: "Fyldig, vinøs og god sødme. Svakt syrleg, lang ettersmak med smak av mandel.",
+          details: "8% alkohol • 9 g/l sukker",
+          pairing: "Aperitiff, fisk, ljost kjøt",
         },
         {
           type: "image",
           content: "/images/tradisjon.png",
           alt: "Tradisjon Sider",
           title: "Tradisjon",
-          description: "Saftig med god friskheit",
-          price: "8% alkohol",
+          description: "Saftig med god friskheit, fokusert preg av mogne eple, hint av grøne urter og krydder.",
+          details: "8% alkohol • 13,2 g/l sukker",
+          pairing: "Aperitiff, skalldyr, fisk",
         },
         {
           type: "image",
           content: "/images/stille-stunder.png",
           alt: "Stille Stunder",
           title: "Stille Stunder",
-          description: "Konsentrert eple, still sider",
-          price: "8% alkohol",
+          description: "Konsentrert eple.",
+          details: "8% alkohol • Under 3 g/l sukker",
+          pairing: "Aperitiff, skalldyr, fisk",
         },
         {
           type: "image",
           content: "/images/hylleblomsider.png",
           alt: "Hylleblomsider",
           title: "Hylleblomsider",
-          description: "Søtleg med god syrebalanse",
-          price: "7,5% alkohol",
+          description: "Søtleg med god syrebalanse.",
+          details: "7,5% alkohol • 36 g/l sukker",
+          pairing: "Aperitiff, ost, dessert",
         },
         {
           type: "image",
           content: "/images/svartsurbaer.png",
           alt: "Svartsurbær",
           title: "Svartsurbær",
-          description: "Musserande sider med bær",
-          price: "8% alkohol",
+          description: "Lang ettersmak av eple og litt tannin.",
+          details: "8% alkohol • Under 3 g/l sukker",
+          pairing: "Aperitiff, ljost kjøt, grønsaker",
         },
         {
           type: "image",
           content: "/images/kvitanesen.png",
           alt: "Kvitanesen Poesider",
           title: "Kvitanesen",
-          description: "Poesider 2018 årgang",
-          price: "7,5% alkohol",
+          description: "Lang fruktig eplesmak med god syrebalanse.",
+          details: "7,5% alkohol • 20 g/l sukker",
+          pairing: "Aperitiff, skalldyr, fisk",
         },
         {
           type: "image",
           content: "/images/kvennadokkje.png",
           alt: "Kvemmadokkje Rosésider",
           title: "Kvemmadokkje",
-          description: "Rosésider med bær",
-          price: "6,5% alkohol",
+          description: "Frisk eplesmak med innslag av raude bær.",
+          details: "6,5% alkohol • 25 g/l sukker",
+          pairing: "Aperitiff, fisk, ljost kjøt",
         },
       ],
     },
@@ -277,49 +284,7 @@ const sections = [
       subtitle: "Sju unike sider",
       description:
         "Opplev heile spekteret av våre handverksider. Frå den klassiske Gravenstein til den innovative Svartsurbær - kvar flaske fortel si eiga historie om Hardanger sitt terroir og vår lidenskap for kvalitet.",
-      cta: "Bestill produkta",
       animationDelay: 0.6,
-    },
-  },
-  {
-    id: "premium-kolleksjon",
-    left: {
-      type: "premium-products-left",
-      items: [
-        {
-          type: "image",
-          content: "/images/gravenstein.png",
-          alt: "Premium Gravenstein",
-          title: "Gravenstein",
-          description: "Eksklusiv årgang",
-        },
-        {
-          type: "image",
-          content: "/images/tradisjon.png",
-          alt: "Premium Tradisjon",
-          title: "Tradisjon",
-          description: "Handplukka kvalitet",
-        },
-      ],
-    },
-    right: {
-      type: "premium-products-right",
-      items: [
-        {
-          type: "image",
-          content: "/images/svartsurbaer.png",
-          alt: "Premium Svartsurbær",
-          title: "Svartsurbaer",
-          description: "Musserande premium",
-        },
-        {
-          type: "image",
-          content: "/images/kvitanesen.png",
-          alt: "Premium Kvitanesen",
-          title: "Kvitanesen",
-          description: "Poesider premium",
-        },
-      ],
     },
   },
   {
@@ -329,8 +294,7 @@ const sections = [
     },
     right: {
       type: "content",
-      title: "Kontakt oss",
-      subtitle: "Velkommen til Hakastad",
+      title: "Velkommen til Hakastad",
       description:
         "Me tek gjerne imot besøk på garden. Opplev den vakre naturen i Hardanger og smak på våre handverksprodukt. Kontakt oss for omvising eller for å bestilla produkta våre.",
       contact: {
@@ -587,7 +551,7 @@ const ProductGrid = ({
           <div
             key={i}
             className={cn(
-              "group relative flex flex-col items-center p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-500",
+              "group relative flex flex-col items-center p-4 bg-white bg-opacity-10 backdrop-blur-sm rounded-lg shadow-sm hover:shadow-md transition-all duration-500 border border-white border-opacity-20",
               activeSection === sectionIndex ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0",
             )}
             style={{ transitionDelay: `${i * 100}ms` }}
@@ -600,9 +564,10 @@ const ProductGrid = ({
                 className="object-contain transition-transform duration-300 group-hover:scale-105"
               />
             </div>
-            <h4 className="text-sm font-medium text-gray-800 mb-1 text-center">{item.title}</h4>
-            <p className="text-xs text-gray-600 mb-2 text-center leading-tight">{item.description}</p>
-            <p className="text-xs text-amber-700 font-medium">{item.price}</p>
+            <h4 className="text-sm font-medium text-white mb-1 text-center">{item.title}</h4>
+            <p className="text-xs text-gray-300 mb-2 text-center leading-tight">{item.description}</p>
+            <p className="text-xs text-amber-400 font-medium mb-1">{item.details}</p>
+            {item.pairing && <p className="text-xs text-gray-400 text-center">{item.pairing}</p>}
           </div>
         ))}
       </div>
@@ -766,11 +731,11 @@ export default function SplitScroll() {
             id={section.id}
             ref={(el) => (sectionRefs.current[index] = el)}
             className={cn(
-              // Split view for all screens except very small (iPhone SE and smaller)
-              "flex h-screen w-full",
-              // Only stack on very small screens (max-width: 375px)
+              "flex h-screen w-full transition-all duration-1000 ease-in-out",
               "max-[375px]:flex-col max-[375px]:min-h-screen max-[375px]:h-auto",
-              section.id === "premium-kolleksjon" ? "bg-gradient-to-r from-[#1a2639] via-[#1e2c42] to-[#1a2639]" : "",
+              section.id === "alle-produkta"
+                ? "bg-gradient-to-r from-[#1a2639] via-[#1e2c42] to-[#1a2639] text-white"
+                : "bg-[#f8f5f0] text-gray-900",
             )}
             style={{ scrollSnapAlign: "start" }}
           >
@@ -885,7 +850,7 @@ export default function SplitScroll() {
                       activeSection === index ? "scale-100" : "scale-105",
                     )}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-l from-transparent to-black to-transparent opacity-20" />
+                  <div className="absolute inset-0 h-screen bg-gradient-to-l from-transparent to-black to-transparent opacity-20" />
                 </div>
               )}
 
@@ -898,11 +863,30 @@ export default function SplitScroll() {
                     )}
                     style={{ transitionDelay: `${(section.right.animationDelay || 0) * 1000}ms` }}
                   >
-                    <h3 className="mb-2 text-sm font-light uppercase tracking-widest text-amber-700 animate-fadeIn">
+                    <h3
+                      className={cn(
+                        "mb-2 text-sm font-light uppercase tracking-widest animate-fadeIn",
+                        section.id === "alle-produkta" ? "text-amber-400" : "text-amber-700",
+                      )}
+                    >
                       {section.right.subtitle}
                     </h3>
-                    <h2 className="mb-6 text-4xl font-light animate-slideInUp">{section.right.title}</h2>
-                    <p className="mb-8 max-w-md text-gray-600 animate-slideInUp">{section.right.description}</p>
+                    <h2
+                      className={cn(
+                        "mb-6 text-4xl font-light animate-slideInUp",
+                        section.id === "alle-produkta" ? "text-white" : "text-gray-900",
+                      )}
+                    >
+                      {section.right.title}
+                    </h2>
+                    <p
+                      className={cn(
+                        "mb-8 max-w-md animate-slideInUp",
+                        section.id === "alle-produkta" ? "text-gray-300" : "text-gray-600",
+                      )}
+                    >
+                      {section.right.description}
+                    </p>
                     {section.right.contact && (
                       <div className="mb-8 space-y-2 text-gray-600 animate-slideInUp">
                         <p className="font-medium text-gray-800">{section.right.contact.name}</p>
@@ -918,12 +902,14 @@ export default function SplitScroll() {
                         <p className="text-sm text-gray-500">{section.right.contact.org}</p>
                       </div>
                     )}
-                    <Button
-                      variant="outline"
-                      className="border-amber-700 text-amber-700 transition-all duration-300 hover:scale-105 hover:bg-amber-700 hover:text-white hover:shadow-lg animate-slideInUp"
-                    >
-                      {section.right.cta}
-                    </Button>
+                    {section.right.cta && (
+                      <Button
+                        variant="outline"
+                        className="border-amber-700 text-amber-700 transition-all duration-300 hover:scale-105 hover:bg-amber-700 hover:text-white hover:shadow-lg animate-slideInUp"
+                      >
+                        {section.right.cta}
+                      </Button>
+                    )}
                   </div>
                 </div>
               )}
@@ -937,9 +923,6 @@ export default function SplitScroll() {
                   sectionIndex={index}
                   animationDelay={section.right.animationDelay || 0}
                 />
-              )}
-              {section.right.type === "premium-products-right" && (
-                <PremiumProductsRight items={section.right.items} activeSection={activeSection} sectionIndex={index} />
               )}
             </div>
           </div>

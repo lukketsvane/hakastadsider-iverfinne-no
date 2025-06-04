@@ -38,8 +38,8 @@ export default function MapWidget() {
   }
 
   return (
-    <div className="flex h-full w-full flex-col justify-center p-12">
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden max-w-md mx-auto">
+    <div className="flex h-full w-full flex-col justify-center p-8">
+      <div className="bg-white rounded-lg shadow-lg overflow-hidden max-w-lg mx-auto w-full">
         {/* Real embedded map */}
         <div className="relative h-64">
           <iframe
