@@ -40,7 +40,7 @@ export default function MapWidget() {
   return (
     <div className="flex h-full w-full flex-col justify-center p-8">
       <div className="bg-white rounded-lg shadow-lg overflow-hidden max-w-lg mx-auto w-full">
-        {/* Real embedded map */}
+        {/* Real embedded map - removed overlay */}
         <div className="relative h-64">
           <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1953.8234567890123!2d7.1234567890123456!3d60.56789012345678!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x463e7b123456789a%3A0x123456789abcdef0!2sApalvegen%2078%2C%205730%20Ulvik%2C%20Norway!5e0!3m2!1sen!2sno!4v1234567890123"
@@ -52,14 +52,6 @@ export default function MapWidget() {
             referrerPolicy="no-referrer-when-downgrade"
             title="Ulvik Frukt & Cideri Location"
           />
-
-          {/* Overlay with business info */}
-          <div className="absolute top-4 left-4 bg-white bg-opacity-95 backdrop-blur-sm px-3 py-2 rounded-lg shadow-sm">
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-              <span className="text-sm font-medium text-gray-800">Ulvik Frukt & Cideri</span>
-            </div>
-          </div>
         </div>
 
         {/* Address info */}
