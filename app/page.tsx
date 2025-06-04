@@ -59,8 +59,8 @@ export default function Home() {
       <div
         className={cn(
           "absolute left-1/2 top-12 z-50 -translate-x-1/2 transform transition-all duration-500",
-          "scale-[1.845] md:scale-[4.2]",
-          scrolled && "md:scale-[3.36]",
+          "scale-[1.2] md:scale-[2.8]",
+          scrolled && "md:scale-[2.24]",
         )}
       >
         <div
@@ -111,7 +111,7 @@ export default function Home() {
               "Var-Gravenstein-Sider",
               "Alle-Produkta",
               "Kontakt",
-              "Social-Media-Footer-Section"
+              "Social-Media-Footer-Section",
             ].map((item) => (
               <a
                 key={item}
