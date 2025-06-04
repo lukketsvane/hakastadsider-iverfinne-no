@@ -60,13 +60,13 @@ export default function Home() {
       {/* Logo */}
       <div
         className={cn(
-          "absolute left-1/2 top-2 z-50 -translate-x-1/2 transform transition-all duration-500",
-          "scale-[0.24] md:scale-[2.0]",
-          scrolled && "md:scale-[1.6]",
+          "absolute left-1/2 top-6 z-50 -translate-x-1/2 transform transition-all duration-500",
+          "scale-[0.82] md:scale-[2.8]",
+          scrolled && "md:scale-[2.24]",
         )}
       >
         <div
-          className="h-[42px] w-[128px] transition-all duration-500 hover:opacity-80"
+          className="h-[60px] w-[184px] transition-all duration-500 hover:opacity-80"
           style={{
             backgroundColor: logoColor,
             maskImage: "url(/images/ulvik-logo.svg)",
