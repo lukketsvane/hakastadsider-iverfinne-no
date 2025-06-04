@@ -1,3 +1,4 @@
+// FILE: app/page.tsx
 "use client"
 
 import { useEffect, useState } from "react"
@@ -18,8 +19,6 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-
-  // State for logo styling based on SplitScroll
   const [activeLabelColor, setActiveLabelColor] = useState<string | null>(null)
   const [isDarkSection, setIsDarkSection] = useState(false)
 
@@ -57,16 +56,15 @@ export default function Home() {
 
   return (
     <main className="relative h-screen w-full overflow-hidden bg-[#f8f5f0]">
-      {/* Logo */}
       <div
         className={cn(
-          "absolute left-1/2 top-6 z-50 -translate-x-1/2 transform transition-all duration-500",
-          "scale-[0.82] md:scale-[2.8]",
-          scrolled && "md:scale-[2.24]",
+          "absolute left-1/2 top-12 z-50 -translate-x-1/2 transform transition-all duration-500",
+          "scale-[1.845] md:scale-[4.2]",
+          scrolled && "md:scale-[3.36]",
         )}
       >
         <div
-          className="h-[60px] w-[184px] transition-all duration-500 hover:opacity-80"
+          className="h-[90px] w-[276px] transition-all duration-500 hover:opacity-80"
           style={{
             backgroundColor: logoColor,
             maskImage: "url(/images/ulvik-logo.svg)",
@@ -82,7 +80,6 @@ export default function Home() {
         />
       </div>
 
-      {/* Menu button - larger and no background */}
       <Button
         variant="ghost"
         className="absolute right-8 top-8 z-50 h-16 w-16 rounded-full p-0 transition-all duration-300 hover:scale-110 hidden md:block bg-transparent hover:bg-transparent"
@@ -97,7 +94,6 @@ export default function Home() {
         </div>
       </Button>
 
-      {/* Sidebar */}
       <div
         className={cn(
           "fixed right-0 top-0 z-40 h-full w-80 transform bg-white transition-transform duration-300 ease-out",
@@ -115,14 +111,15 @@ export default function Home() {
               "Var-Gravenstein-Sider",
               "Alle-Produkta",
               "Kontakt",
+              "Social-Media-Footer-Section"
             ].map((item) => (
               <a
                 key={item}
-                href={`#${item.toLowerCase().replace(/\s+/g, "-")}`}
+                href={`#${item.toLowerCase().replace(/\s+/g, "-").replace(/æ/g, "ae").replace(/ø/g, "o").replace(/å/g, "a")}`}
                 className="group relative text-xl font-light transition-all duration-300 hover:text-amber-700 hover:translate-x-2"
                 onClick={() => setMenuOpen(false)}
               >
-                <span className="relative z-10">{item}</span>
+                <span className="relative z-10">{item.replace(/-/g, " ")}</span>
                 <div className="absolute left-0 top-1/2 h-0.5 w-0 bg-amber-700 transition-all duration-300 group-hover:w-8 transform -translate-y-1/2"></div>
               </a>
             ))}
@@ -164,28 +161,6 @@ export default function Home() {
           onClick={() => setMenuOpen(false)}
         />
       )}
-
-      {/* Fixed Footer with Social Media Icons */}
-      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-40 flex space-x-6 bg-white bg-opacity-90 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg">
-        <a
-          href="https://www.instagram.com/ulvikfruktogcideri/?hl=en"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Ulvik Frukt & Cideri Instagram"
-          className="text-gray-600 hover:text-amber-700 transition-colors"
-        >
-          <Instagram size={24} />
-        </a>
-        <a
-          href="https://www.facebook.com/UlvikFruktogCideri/"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Ulvik Frukt & Cideri Facebook"
-          className="text-gray-600 hover:text-amber-700 transition-colors"
-        >
-          <Facebook size={24} />
-        </a>
-      </div>
 
       <SplitScroll onSectionChange={handleSectionChange} />
     </main>

@@ -1,12 +1,15 @@
+// FILE: components/split-scroll.tsx
 "use client"
 
 import { useEffect, useRef, useState, useCallback } from "react"
 import Image from "next/image"
-import { Play, Pause, Volume2, VolumeX, ShoppingBag, Info } from "lucide-react"
+import { Play, Pause, Volume2, VolumeX, ShoppingBag, Info, Instagram, Facebook, MapPin } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import MapWidget from "@/components/map-widget"
+
+import type { JSX } from "react"
 
 interface SectionChangeData {
   activeSectionIndex: number
@@ -21,12 +24,37 @@ interface SplitScrollProps {
 const TRADISJON_LABEL_COLOR = "#A42F2A"
 const GRAVENSTEIN_LABEL_COLOR = "#B08D57"
 
-const sections = [
+interface SectionContent {
+  type: string
+  content?: any
+  alt?: string
+  parallax?: boolean
+  logoSrc?: string
+  subtitle?: string
+  description?: string
+  title?: string
+  cta?: string
+  animationDelay?: number
+  product?: any
+  items?: any[]
+  contact?: any
+}
+
+interface SectionDefinition {
+  id: string
+  isDark?: boolean
+  labelColor?: string
+  left: SectionContent
+  right: SectionContent
+  fullWidthComponent?: () => JSX.Element
+}
+
+const sections: SectionDefinition[] = [
   {
     id: "heim",
     left: {
       type: "image",
-      content: "/images/hardanger-blossoms.jpeg",
+      content: "/placeholder.svg?height=800&width=600&text=Hardanger+Landscape",
       alt: "Hardanger med epleblom og fjord",
       parallax: true,
     },
@@ -47,15 +75,25 @@ const sections = [
       title: "Vår Tradisjon",
       subtitle: "Generasjonar med handverk",
       description:
-        "I over 200 år har familier i Hardanger dyrka eple og laga sider. Me held fram denne stolte tradisjonen med respekt for naturen og dei gamle metodane, samtidig som me nyttar moderne teknikkar for å sikra høgste kvalitet.",
+        "I over 200 år har familiar i Hardanger dyrka eple og laga sider. Me held fram denne stolte tradisjonen med respekt for naturen og dei gamle metodane, samstundes som me nyttar moderne teknikkar for å sikra høgste kvalitet.",
       cta: "Opplev tradisjonen",
       animationDelay: 0.3,
     },
-    right: { type: "image", content: "/images/bee-apple-blossom.png", alt: "Bie på epleblom", parallax: true },
+    right: {
+      type: "image",
+      content: "/placeholder.svg?height=800&width=600&text=Bee+on+Apple+Blossom",
+      alt: "Bie på epleblom",
+      parallax: true,
+    },
   },
   {
     id: "garden",
-    left: { type: "image", content: "/images/farmer-portrait.jpeg", alt: "Gardbrukar blant epleblom", parallax: true },
+    left: {
+      type: "image",
+      content: "/placeholder.svg?height=800&width=600&text=Farmer+Portrait",
+      alt: "Gardbrukar blant epleblom",
+      parallax: true,
+    },
     right: {
       type: "content",
       title: "Garden Hakastad",
@@ -69,13 +107,18 @@ const sections = [
   {
     id: "opplevingar",
     isDark: true,
-    left: { type: "image", content: "/images/orchard-visitors.jpeg", alt: "Besøkande i eplehagen", parallax: true },
+    left: {
+      type: "image",
+      content: "/placeholder.svg?height=800&width=600&text=Orchard+Visitors",
+      alt: "Besøkande i eplehagen",
+      parallax: true,
+    },
     right: {
       type: "content",
       title: "Opplevingar",
       subtitle: "Smak og opplev",
       description:
-        "Kom og opplev Hardanger og smak på våre eksepsjonelle sider og eplemost. Me tilbyr omvising på garden og sidersmak i dei vakre omgivnadene i Hardanger. Opplev tradisjonen og handverket bak kvar flaske.",
+        "Kom og opplev Hardanger og smak på våre eksepsjonelle sider og eplemost. Me tilbyr omvising på garden og sidersmak i dei vakre omgjevnadene i Hardanger. Opplev tradisjonen og handverket bak kvar flaske.",
       cta: "Bestill omvising",
       animationDelay: 0.4,
     },
@@ -89,16 +132,13 @@ const sections = [
       product: {
         name: "Ulvik Frukt & Cideri Sider Frå Hardanger Tradisjon",
         category: "SIDER",
-        bottleImage: "/images/tradisjon-large.png",
-        origin: "Norge, Vestland, Hardanger",
+        bottleImage: "/placeholder.svg?height=900&width=300&text=Tradisjon+Bottle",
+        origin: "Noreg, Vestland, Hardanger",
         description:
-          "Saftig med god friskhet, fokusert preg av modne epler, hint av grønne urter og krydder. Myk brus.",
-        price: "Kr 199,90",
-        volume: "75 cl",
-        pricePerLiter: "266,53 kr/l",
-        availability: "Kan bestilles til alle butikker",
-        storeLinkText: "Vis butikker med varen på lager",
-        delivery: "Post/Levering: Kan bestilles",
+          "Saftig med god friskheit, fokusert preg av mogne eple, hint av grøne urter og krydder. Mjuk brus.",
+        availability: "Kan bestillast til alle butikkar",
+        storeLinkText: "Vis butikkar med varen på lager",
+        delivery: "Post/Levering: Kan bestillast",
         foodPairings: [
           { icon: "AperitiffIcon", text: "APERITIFF" },
           { icon: "SkalldyrIcon", text: "SKALLDYR" },
@@ -106,11 +146,11 @@ const sections = [
         ],
         tasteProfile: [
           { icon: "FyldeIcon", text: "FYLDE" },
-          { icon: "FriskhetIcon", text: "FRISKHET" },
+          { icon: "FriskhetIcon", text: "FRISKHEIT" },
           { icon: "SødmeIcon", text: "SØDME" },
         ],
         drinkInfo: [
-          { text: "Drikkeklar, ikke egnet for lagring" },
+          { text: "Drikkeklar, ikkje eigna for lagring" },
           { text: "Alkohol 8%" },
           { text: "Sukker 13,2 g/l" },
           { text: "Syre 6,8 g/l" },
@@ -128,27 +168,24 @@ const sections = [
       product: {
         name: "Ulvik Sider frå Hardanger Gravenstein",
         category: "SIDER",
-        bottleImage: "/images/gravenstein-large.png",
-        origin: "Norge, Vestland, Hardanger",
-        description: "Fyldig, vinøs og god sødme. Svakt syrlig, lang ettersmak med smak av mandel.",
-        price: "Kr 199,90",
-        volume: "75 cl",
-        pricePerLiter: "266,53 kr/l",
-        availability: "Kan bestilles til alle butikker",
-        storeLinkText: "Vis butikker med varen på lager",
-        delivery: "Post/Levering: Kan bestilles",
+        bottleImage: "/placeholder.svg?height=900&width=300&text=Gravenstein+Bottle",
+        origin: "Noreg, Vestland, Hardanger",
+        description: "Fyldig, vinøs og god sødme. Svakt syrleg, lang ettersmak med smak av mandel.",
+        availability: "Kan bestillast til alle butikkar",
+        storeLinkText: "Vis butikkar med varen på lager",
+        delivery: "Post/Levering: Kan bestillast",
         foodPairings: [
           { icon: "AperitiffIcon", text: "APERITIFF" },
           { icon: "FiskIcon", text: "FISK" },
-          { icon: "LystKjøttIcon", text: "LYST KJØTT" },
+          { icon: "LystKjøttIcon", text: "LYST KJØT" },
         ],
         tasteProfile: [
           { icon: "FyldeIcon", text: "FYLDE" },
-          { icon: "FriskhetIcon", text: "FRISKHET" },
+          { icon: "FriskhetIcon", text: "FRISKHEIT" },
           { icon: "SødmeIcon", text: "SØDME" },
         ],
         drinkInfo: [
-          { text: "Drikkeklar nå, men kan også lagres" },
+          { text: "Drikkeklar no, men kan òg lagrast" },
           { text: "Eple (Gul Gravenstein)" },
           { text: "Alkohol 8%" },
           { text: "Sukker 9 g/l" },
@@ -158,15 +195,15 @@ const sections = [
           { label: "Varetype", value: "Sider" },
           { label: "Varenummer", value: "14687201" },
           { label: "Lukt", value: "Aroma av eple." },
-          { label: "Smak", value: "Fyldig, vinøs og god sødme. Svakt syrlig, lang ettersmak med smak av mandel." },
-          { label: "Farge", value: "Middels dyp gyllengul." },
-          { label: "Land, distrikt", value: "Norge, Vestland, Hardanger" },
+          { label: "Smak", value: "Fyldig, vinøs og god sødme. Svakt syrleg, lang ettersmak med smak av mandel." },
+          { label: "Farge", value: "Middels djup gyllengul." },
+          { label: "Land, distrikt", value: "Noreg, Vestland, Hardanger" },
           { label: "Produsent", value: "Ulvik Frukt & Cideri" },
-          { label: "Metode", value: "Gårdspresset epler, spontangjæring fra epleskallet, tilsatt CO2 og sulfitt." },
-          { label: "Inneholder", value: "Sulfitt" },
+          { label: "Metode", value: "Gårdspressa eple, spontangjæring frå epleskalet, tilsett CO2 og sulfitt." },
+          { label: "Inneheld", value: "Sulfitt" },
           { label: "Emballasjetype", value: "Glass" },
           { label: "Korktype", value: "Skrukapsel" },
-          { label: "Utvalg", value: "Bestillingsutvalget" },
+          { label: "Utval", value: "Tingingsutvalet" },
           { label: "Grossist", value: "Real Vin AS" },
           { label: "Transportør", value: "Skanlog AS" },
         ],
@@ -182,7 +219,7 @@ const sections = [
       items: [
         {
           type: "image",
-          content: "/images/gravenstein-large.png",
+          content: "/placeholder.svg?height=400&width=120&text=Gravenstein",
           alt: "Gravenstein Sider",
           title: "Gravenstein",
           description: "Fyldig, vinøs og god sødme.",
@@ -190,7 +227,7 @@ const sections = [
         },
         {
           type: "image",
-          content: "/images/tradisjon-large.png",
+          content: "/placeholder.svg?height=400&width=120&text=Tradisjon",
           alt: "Tradisjon Sider",
           title: "Tradisjon",
           description: "Saftig med god friskheit.",
@@ -198,7 +235,7 @@ const sections = [
         },
         {
           type: "image",
-          content: "/images/stille-stunder.png",
+          content: "/placeholder.svg?height=400&width=120&text=Stille+Stunder",
           alt: "Stille Stunder",
           title: "Stille Stunder",
           description: "Konsentrert eple.",
@@ -206,7 +243,7 @@ const sections = [
         },
         {
           type: "image",
-          content: "/images/hylleblomsider.png",
+          content: "/placeholder.svg?height=400&width=120&text=Hylleblomsider",
           alt: "Hylleblomsider",
           title: "Hylleblomsider",
           description: "Søtleg med god syrebalanse.",
@@ -214,7 +251,7 @@ const sections = [
         },
         {
           type: "image",
-          content: "/images/svartsurbaer.png",
+          content: "/placeholder.svg?height=400&width=120&text=Svartsurbaer",
           alt: "Svartsurbær",
           title: "Svartsurbær",
           description: "Lang ettersmak av eple.",
@@ -222,7 +259,7 @@ const sections = [
         },
         {
           type: "image",
-          content: "/images/cider-bottles-outdoor.png",
+          content: "/placeholder.svg?height=400&width=120&text=Eplemost",
           alt: "Sider utandørs",
           title: "Eplemost",
           description: "Naturleg eplemost.",
@@ -245,7 +282,7 @@ const sections = [
     left: { type: "map-widget" },
     right: {
       type: "content",
-      title: "Velkommen til Hakastad",
+      title: "Velkomen til Hakastad",
       description:
         "Me tek gjerne imot besøk på garden. Opplev den vakre naturen i Hardanger og smak på våre handverksprodukt. Kontakt oss for omvising eller for å bestilla produkta våre.",
       contact: {
@@ -259,9 +296,42 @@ const sections = [
       animationDelay: 0.6,
     },
   },
+  {
+    id: "social-media-footer-section",
+    isDark: false,
+    left: { type: "full-width-component-placeholder" },
+    right: { type: "full-width-component-placeholder" },
+    fullWidthComponent: SocialMediaFooter,
+  },
 ]
 
-// Helper Icon Components
+function SocialMediaFooter() {
+  return (
+    <div className="flex justify-center items-center py-16 bg-[#f8f5f0] w-full h-full">
+      <div className="flex space-x-8">
+        <a
+          href="https://www.instagram.com/ulvikfruktogcideri/?hl=en"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Ulvik Frukt & Cideri Instagram"
+          className="text-gray-600 hover:text-amber-700 transition-colors"
+        >
+          <Instagram size={32} />
+        </a>
+        <a
+          href="https://www.facebook.com/UlvikFruktogCideri/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Ulvik Frukt & Cideri Facebook"
+          className="text-gray-600 hover:text-amber-700 transition-colors"
+        >
+          <Facebook size={32} />
+        </a>
+      </div>
+    </div>
+  )
+}
+
 const AperitiffIcon = () => <ShoppingBag size={20} className="mr-2 text-gray-600" />
 const SkalldyrIcon = () => <Info size={20} className="mr-2 text-gray-600" />
 const FiskIcon = () => <Info size={20} className="mr-2 text-gray-600" />
@@ -271,7 +341,6 @@ const FriskhetIcon = () => <div className="w-4 h-4 border-2 border-gray-700 roun
 const SødmeIcon = () => <div className="w-4 h-4 border-2 border-gray-700 rounded-full mr-2"></div>
 const DrikkeIkon = () => <Info size={16} className="mr-1 text-gray-500" />
 
-// Single Product Showcase Component
 const SingleProductShowcase = ({
   product,
   activeSection,
@@ -313,7 +382,6 @@ const SingleProductShowcase = ({
         "max-[768px]:flex-col",
       )}
     >
-      {/* Left Side: Bottle Image */}
       <div className="w-1/2 max-[768px]:w-full max-[768px]:h-1/2 flex items-center justify-center p-8 relative overflow-hidden">
         <Image
           src={product.bottleImage || "/placeholder.svg"}
@@ -322,23 +390,36 @@ const SingleProductShowcase = ({
           height={900}
           className={cn(
             "object-contain transition-all duration-1500 ease-out drop-shadow-2xl",
-            activeSection === sectionIndex ? "scale-100 translate-y-0 rotate-0" : "scale-75 translate-y-16 -rotate-12",
+            activeSection === sectionIndex
+              ? "scale-100 translate-y-0 rotate-0"
+              : "scale-60 translate-y-32 -rotate-45 translate-x-16",
           )}
         />
       </div>
-
-      {/* Right Side: Product Details */}
       <div
         className={cn("w-1/2 max-[768px]:w-full max-[768px]:h-auto overflow-y-auto p-8 md:p-12 space-y-6", textColor)}
       >
         <p className={`text-sm uppercase tracking-wider ${subHeadingColor}`}>{product.category}</p>
         <h1 className={`text-3xl md:text-4xl font-light ${headingColor}`}>{product.name}</h1>
         <p className={`text-xs ${textColor}`}>{product.origin}</p>
-
         <p className="text-lg leading-relaxed">{product.description}</p>
 
+        <div className="space-y-2 text-sm mt-4">
+          <div className="flex items-center">
+            <MapPin size={16} className="mr-2" />
+            <span>
+              {product.availability}.{" "}
+              <a href="#" className={linkColor}>
+                {product.storeLinkText}
+              </a>
+            </span>
+          </div>
+          <div className="flex items-center">
+            <ShoppingBag size={16} className="mr-2" />
+            <span>{product.delivery}</span>
+          </div>
+        </div>
         <hr className={cn("my-6", isDarkMode ? "border-gray-700" : "border-gray-300")} />
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
           <div>
             {product.foodPairings.map((item: any, idx: number) => (
@@ -363,7 +444,6 @@ const SingleProductShowcase = ({
             ))}
           </div>
         </div>
-
         {product.productDetailsTable && (
           <>
             <hr className={cn("my-6", isDarkMode ? "border-gray-700" : "border-gray-300")} />
@@ -383,9 +463,6 @@ const SingleProductShowcase = ({
   )
 }
 
-// Other components (VideoPlayer, LogoContent, ProductShowcase, ProductGrid, etc.) remain the same...
-// [Previous component code continues here - truncated for brevity but should be included in full implementation]
-
 const VideoPlayer = ({ src, poster, alt }: { src: string; poster: string; alt: string }) => {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isMuted, setIsMuted] = useState(true)
@@ -394,15 +471,11 @@ const VideoPlayer = ({ src, poster, alt }: { src: string; poster: string; alt: s
 
   const togglePlay = () => {
     if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause()
-      } else {
-        videoRef.current.play()
-      }
+      if (isPlaying) videoRef.current.pause()
+      else videoRef.current.play()
       setIsPlaying(!isPlaying)
     }
   }
-
   const toggleMute = () => {
     if (videoRef.current) {
       videoRef.current.muted = !isMuted
@@ -419,7 +492,6 @@ const VideoPlayer = ({ src, poster, alt }: { src: string; poster: string; alt: s
       <video ref={videoRef} className="h-full w-full object-cover" poster={poster} muted={isMuted} loop playsInline>
         <source src={src} type="video/mp4" />
       </video>
-
       <div
         className={cn(
           "absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 transition-opacity duration-300",
@@ -561,27 +633,21 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
 
   const currentSectionData = sections[activeSectionIndex]
   const isCurrentSectionDark = !!currentSectionData?.isDark
-  const currentLabelColor = currentSectionData?.labelColor || null
 
   const scrollToSection = useCallback(
     (index: number) => {
       if (isScrolling || index === activeSectionIndex) return
-
       setIsLoading(true)
       setIsScrolling(true)
-
       setTimeout(() => {
         const sectionElement = sectionRefs.current[index]
         if (sectionElement && containerRef.current) {
-          containerRef.current.scrollTo({
-            top: sectionElement.offsetTop,
-            behavior: "smooth",
-          })
+          containerRef.current.scrollTo({ top: sectionElement.offsetTop, behavior: "smooth" })
           window.history.pushState(null, "", `#${sections[index].id}`)
         }
         setTimeout(() => {
-          setIsScrolling(false)
           setIsLoading(false)
+          setIsScrolling(false)
         }, 1200)
       }, 300)
     },
@@ -591,13 +657,11 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
-
     const handleScroll = () => {
       if (!container) return
       const scrollTop = container.scrollTop
       const scrollHeight = container.scrollHeight - container.clientHeight
       const progress = scrollHeight > 0 ? scrollTop / scrollHeight : 0
-
       setScrollProgress(progress)
 
       parallaxRefs.current.forEach((ref, parallaxElementIndex) => {
@@ -611,9 +675,8 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
       })
 
       if (isScrolling) return
-
       const viewportHeight = window.innerHeight
-      let newActiveSection = 0
+      let newActiveSection = activeSectionIndex
 
       for (let i = 0; i < sectionRefs.current.length; i++) {
         const section = sectionRefs.current[i]
@@ -635,12 +698,9 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
           }
         }
       }
-
       if (newActiveSection !== activeSectionIndex) {
         setActiveSectionIndex(newActiveSection)
-        if (!isScrolling) {
-          window.history.pushState(null, "", `#${sections[newActiveSection].id}`)
-        }
+        if (!isScrolling) window.history.pushState(null, "", `#${sections[newActiveSection].id}`)
       }
     }
 
@@ -649,21 +709,20 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
     const hash = window.location.hash.replace("#", "")
     if (hash) {
       const index = sections.findIndex((section) => section.id === hash)
-      if (index !== -1 && index !== activeSectionIndex) {
-        setTimeout(() => scrollToSection(index), 500)
-      }
+      if (index !== -1 && index !== activeSectionIndex) setTimeout(() => scrollToSection(index), 500)
     }
-
     return () => container.removeEventListener("scroll", handleScroll)
   }, [activeSectionIndex, isScrolling, scrollToSection])
 
   useEffect(() => {
     const currentSection = sections[activeSectionIndex]
-    onSectionChange({
-      activeSectionIndex: activeSectionIndex,
-      currentLabelColor: currentSection?.labelColor || null,
-      isDarkSection: !!currentSection?.isDark,
-    })
+    if (currentSection) {
+      onSectionChange({
+        activeSectionIndex: activeSectionIndex,
+        currentLabelColor: currentSection.labelColor || null,
+        isDarkSection: !!currentSection.isDark,
+      })
+    }
   }, [activeSectionIndex, onSectionChange])
 
   return (
@@ -676,12 +735,10 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
           </div>
         </div>
       )}
-
       <div
         className="fixed left-0 top-0 z-40 h-1 bg-amber-700 transition-all duration-300"
         style={{ width: `${scrollProgress * 100}%` }}
       />
-
       <div
         ref={containerRef}
         className={cn(
@@ -690,22 +747,25 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
         )}
         style={{ scrollSnapType: "y mandatory" }}
       >
-        <div className="absolute right-8 top-1/2 z-30 -translate-y-1/2 transform">
+        <div className="fixed right-8 top-1/2 z-30 -translate-y-1/2 transform">
           <div className="flex flex-col space-y-4">
             {sections.map((_, index) => {
               const isActive = index === activeSectionIndex
               const isPassed = index < activeSectionIndex
-              const dotBgColor = isActive || isPassed ? "#d97706" : isCurrentSectionDark ? "#4b5563" : "#d1d5db"
-
+              const dotBgColor =
+                isActive || isPassed ? "#d97706" : sections[activeSectionIndex]?.isDark ? "#4b5563" : "#d1d5db"
               return (
                 <button
-                  key={index}
+                  key={sections[index].id}
                   onClick={() => scrollToSection(index)}
                   aria-label={`Gå til seksjon ${index + 1}`}
                   className={cn(
                     "h-3 w-3 rounded-full transition-all duration-500 ease-out border",
                     isActive ? "ring-2 ring-offset-2 ring-[#d97706]" : "border-transparent",
-                    isCurrentSectionDark && !isActive && !isPassed ? "ring-gray-600" : "",
+                    sections[activeSectionIndex]?.isDark && !isActive && !isPassed ? "ring-gray-600" : "",
+                    sections[activeSectionIndex]?.isDark && !(isActive || isPassed)
+                      ? "border-gray-500"
+                      : "border-gray-400",
                   )}
                   style={{ backgroundColor: dotBgColor }}
                 />
@@ -713,183 +773,100 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
             })}
           </div>
         </div>
-
-        {sections.map((section, index) => (
-          <div
-            key={section.id}
-            id={section.id}
-            ref={(el) => (sectionRefs.current[index] = el)}
-            className={cn(
-              "flex h-screen w-full transition-all duration-1000 ease-in-out relative",
-              "max-[375px]:flex-col max-[375px]:h-auto max-[375px]:min-h-screen",
-              section.left.type === "single-product-showcase" ? "p-0" : "",
-            )}
-            style={{ scrollSnapAlign: "start" }}
-          >
-            {section.left.type === "single-product-showcase" ? (
-              <SingleProductShowcase
-                product={section.left.product}
-                activeSection={activeSectionIndex}
-                sectionIndex={index}
-                isDarkMode={!!section.isDark}
-              />
-            ) : (
-              <>
-                <div
-                  className={cn(
-                    "relative h-full w-1/2 overflow-hidden",
-                    "max-[375px]:w-full max-[375px]:h-1/2",
-                    "border-r",
-                    section.isDark ? "border-gray-700" : "border-gray-200",
-                    "max-[375px]:border-r-0 max-[375px]:border-b",
-                  )}
-                >
-                  {section.left.type === "image" && (
-                    <div
-                      ref={(el) => (section.left.parallax ? (parallaxRefs.current[index * 2] = el) : null)}
-                      className="relative h-full w-full will-change-transform"
-                    >
-                      <Image
-                        src={section.left.content || "/placeholder.svg"}
-                        alt={section.left.alt || ""}
-                        fill
-                        className={cn(
-                          "object-cover transition-transform duration-1000 ease-out",
-                          activeSectionIndex === index ? "scale-100" : "scale-105",
-                        )}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black to-transparent opacity-20" />
-                    </div>
-                  )}
-                  {section.left.type === "content" && (
-                    <div className="flex h-full w-full flex-col items-center justify-center p-6 max-[375px]:p-4 text-right">
+        {sections.map((section, index) => {
+          if (section.fullWidthComponent) {
+            return (
+              <div
+                key={section.id}
+                id={section.id}
+                ref={(el) => (sectionRefs.current[index] = el)}
+                className="h-auto w-full"
+                style={{ scrollSnapAlign: "start" }}
+              >
+                {section.fullWidthComponent()}
+              </div>
+            )
+          }
+          return (
+            <div
+              key={section.id}
+              id={section.id}
+              ref={(el) => (sectionRefs.current[index] = el)}
+              className={cn(
+                "flex h-screen w-full transition-all duration-1000 ease-in-out relative",
+                "max-[375px]:flex-col max-[375px]:h-auto max-[375px]:min-h-screen",
+                section.left.type === "single-product-showcase" ? "p-0" : "",
+              )}
+              style={{ scrollSnapAlign: "start" }}
+            >
+              {section.left.type === "single-product-showcase" ? (
+                <SingleProductShowcase
+                  product={section.left.product}
+                  activeSection={activeSectionIndex}
+                  sectionIndex={index}
+                  isDarkMode={!!section.isDark}
+                />
+              ) : (
+                <>
+                  <div
+                    className={cn(
+                      "relative h-full w-1/2 overflow-hidden",
+                      "max-[375px]:w-full max-[375px]:h-1/2",
+                      "border-r",
+                      section.isDark ? "border-gray-700" : "border-gray-200",
+                      "max-[375px]:border-r-0 max-[375px]:border-b",
+                    )}
+                  >
+                    {section.left.type === "image" && (
                       <div
-                        className={cn(
-                          "transform transition-all duration-1000",
-                          activeSectionIndex === index ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0",
-                        )}
-                        style={{ transitionDelay: `${(section.left.animationDelay || 0) * 1000}ms` }}
+                        ref={(el) => (section.left.parallax ? (parallaxRefs.current[index * 2] = el) : null)}
+                        className="relative h-full w-full will-change-transform"
                       >
-                        <h3
+                        <Image
+                          src={section.left.content || "/placeholder.svg"}
+                          alt={section.left.alt || ""}
+                          fill
                           className={cn(
-                            "mb-2 text-sm font-light uppercase tracking-widest animate-fadeIn transition-colors duration-500",
-                            section.isDark ? "text-amber-400" : "text-amber-700",
+                            "object-cover transition-transform duration-1000 ease-out",
+                            activeSectionIndex === index ? "scale-100" : "scale-105",
                           )}
-                        >
-                          {section.left.subtitle}
-                        </h3>
-                        <h2
-                          className={cn(
-                            "mb-6 text-4xl font-light animate-slideInUp transition-colors duration-500",
-                            section.isDark ? "text-white" : "text-gray-900",
-                          )}
-                        >
-                          {section.left.title}
-                        </h2>
-                        <p
-                          className={cn(
-                            "mb-8 max-w-md animate-slideInUp transition-colors duration-500",
-                            section.isDark ? "text-gray-300" : "text-gray-600",
-                          )}
-                        >
-                          {section.left.description}
-                        </p>
-                        <Button
-                          variant="outline"
-                          className={cn(
-                            "border-amber-700 text-amber-700 transition-all duration-300 hover:scale-105 hover:text-white hover:shadow-lg animate-slideInUp",
-                            section.isDark
-                              ? "hover:bg-amber-500 border-amber-500 text-amber-500"
-                              : "hover:bg-amber-700",
-                          )}
-                        >
-                          {section.left.cta}
-                        </Button>
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black to-transparent opacity-20" />
                       </div>
-                    </div>
-                  )}
-                  {section.left.type === "product-grid" && (
-                    <ProductGrid items={section.left.items} activeSection={activeSectionIndex} sectionIndex={index} />
-                  )}
-                  {section.left.type === "map-widget" && <MapWidget />}
-                </div>
-
-                <div className={cn("relative h-full w-1/2 overflow-hidden", "max-[375px]:w-full max-[375px]:h-1/2")}>
-                  {section.right.type === "image" && (
-                    <div
-                      ref={(el) => (section.right.parallax ? (parallaxRefs.current[index * 2 + 1] = el) : null)}
-                      className="relative h-full w-full will-change-transform"
-                    >
-                      <Image
-                        src={section.right.content || "/placeholder.svg"}
-                        alt={section.right.alt || ""}
-                        fill
-                        className={cn(
-                          "object-cover transition-transform duration-1000 ease-out",
-                          activeSectionIndex === index ? "scale-100" : "scale-105",
-                        )}
-                      />
-                      <div className="absolute inset-0 h-screen bg-gradient-to-l from-transparent to-black to-transparent opacity-20" />
-                    </div>
-                  )}
-                  {section.right.type === "content" && (
-                    <div className="flex h-full w-full flex-col items-center justify-center p-6 max-[375px]:p-4 text-left">
-                      <div
-                        className={cn(
-                          "transform transition-all duration-1000",
-                          activeSectionIndex === index ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0",
-                        )}
-                        style={{ transitionDelay: `${(section.right.animationDelay || 0) * 1000}ms` }}
-                      >
-                        <h3
+                    )}
+                    {section.left.type === "content" && (
+                      <div className="flex h-full w-full flex-col items-center justify-center p-6 max-[375px]:p-4 text-right">
+                        <div
                           className={cn(
-                            "mb-2 text-sm font-light uppercase tracking-widest animate-fadeIn transition-colors duration-500",
-                            section.isDark ? "text-amber-400" : "text-amber-700",
+                            "transform transition-all duration-1000",
+                            activeSectionIndex === index ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0",
                           )}
+                          style={{ transitionDelay: `${(section.left.animationDelay || 0) * 1000}ms` }}
                         >
-                          {section.right.subtitle}
-                        </h3>
-                        <h2
-                          className={cn(
-                            "mb-6 text-4xl font-light animate-slideInUp transition-colors duration-500",
-                            section.isDark ? "text-white" : "text-gray-900",
-                          )}
-                        >
-                          {section.right.title}
-                        </h2>
-                        <p
-                          className={cn(
-                            "mb-8 max-w-md animate-slideInUp transition-colors duration-500",
-                            section.isDark ? "text-gray-300" : "text-gray-600",
-                          )}
-                        >
-                          {section.right.description}
-                        </p>
-                        {section.right.contact && (
-                          <div
+                          <h3
                             className={cn(
-                              "mb-8 space-y-2 animate-slideInUp",
-                              section.isDark ? "text-gray-400" : "text-gray-600",
+                              "mb-2 text-sm font-light uppercase tracking-widest animate-fadeIn transition-colors duration-500",
+                              section.isDark ? "text-amber-400" : "text-amber-700",
                             )}
                           >
-                            <p className={cn("font-medium", section.isDark ? "text-gray-200" : "text-gray-800")}>
-                              {section.right.contact.name}
-                            </p>
-                            <p className="transition-colors duration-300 hover:text-amber-700">
-                              {section.right.contact.address}
-                            </p>
-                            <p className="transition-colors duration-300 hover:text-amber-700">
-                              {section.right.contact.phone}
-                            </p>
-                            <p className="transition-colors duration-300 hover:text-amber-700">
-                              {section.right.contact.email}
-                            </p>
-                            <p className={cn("text-sm", section.isDark ? "text-gray-500" : "text-gray-500")}>
-                              {section.right.contact.org}
-                            </p>
-                          </div>
-                        )}
-                        {section.right.cta && (
+                            {section.left.subtitle}
+                          </h3>
+                          <h2
+                            className={cn(
+                              "mb-6 text-4xl font-light animate-slideInUp transition-colors duration-500",
+                              section.isDark ? "text-white" : "text-gray-900",
+                            )}
+                          >
+                            {section.left.title}
+                          </h2>
+                          <p
+                            className={cn(
+                              "mb-8 max-w-md animate-slideInUp transition-colors duration-500",
+                              section.isDark ? "text-gray-300" : "text-gray-600",
+                            )}
+                          >
+                            {section.left.description}
+                          </p>
                           <Button
                             variant="outline"
                             className={cn(
@@ -899,29 +876,129 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
                                 : "hover:bg-amber-700",
                             )}
                           >
-                            {section.right.cta}
+                            {section.left.cta}
                           </Button>
-                        )}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  {section.right.type === "logo-content" && (
-                    <LogoContent
-                      logoSrc={section.right.logoSrc}
-                      subtitle={section.right.subtitle}
-                      description={section.right.description}
-                      cta={section.right.cta}
-                      activeSection={activeSectionIndex}
-                      sectionIndex={index}
-                      animationDelay={section.right.animationDelay || 0}
-                      isDarkMode={!!section.isDark}
-                    />
-                  )}
-                </div>
-              </>
-            )}
-          </div>
-        ))}
+                    )}
+                    {section.left.type === "product-grid" && (
+                      <ProductGrid
+                        items={section.left.items || []}
+                        activeSection={activeSectionIndex}
+                        sectionIndex={index}
+                      />
+                    )}
+                    {section.left.type === "map-widget" && <MapWidget />}
+                  </div>
+                  <div className={cn("relative h-full w-1/2 overflow-hidden", "max-[375px]:w-full max-[375px]:h-1/2")}>
+                    {section.right.type === "image" && (
+                      <div
+                        ref={(el) => (section.right.parallax ? (parallaxRefs.current[index * 2 + 1] = el) : null)}
+                        className="relative h-full w-full will-change-transform"
+                      >
+                        <Image
+                          src={section.right.content || "/placeholder.svg"}
+                          alt={section.right.alt || ""}
+                          fill
+                          className={cn(
+                            "object-cover transition-transform duration-1000 ease-out",
+                            activeSectionIndex === index ? "scale-100" : "scale-105",
+                          )}
+                        />
+                        <div className="absolute inset-0 h-screen bg-gradient-to-l from-transparent to-black to-transparent opacity-20" />
+                      </div>
+                    )}
+                    {section.right.type === "content" && (
+                      <div className="flex h-full w-full flex-col items-center justify-center p-6 max-[375px]:p-4 text-left">
+                        <div
+                          className={cn(
+                            "transform transition-all duration-1000",
+                            activeSectionIndex === index ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0",
+                          )}
+                          style={{ transitionDelay: `${(section.right.animationDelay || 0) * 1000}ms` }}
+                        >
+                          <h3
+                            className={cn(
+                              "mb-2 text-sm font-light uppercase tracking-widest animate-fadeIn transition-colors duration-500",
+                              section.isDark ? "text-amber-400" : "text-amber-700",
+                            )}
+                          >
+                            {section.right.subtitle}
+                          </h3>
+                          <h2
+                            className={cn(
+                              "mb-6 text-4xl font-light animate-slideInUp transition-colors duration-500",
+                              section.isDark ? "text-white" : "text-gray-900",
+                            )}
+                          >
+                            {section.right.title}
+                          </h2>
+                          <p
+                            className={cn(
+                              "mb-8 max-w-md animate-slideInUp transition-colors duration-500",
+                              section.isDark ? "text-gray-300" : "text-gray-600",
+                            )}
+                          >
+                            {section.right.description}
+                          </p>
+                          {section.right.contact && (
+                            <div
+                              className={cn(
+                                "mb-8 space-y-2 animate-slideInUp",
+                                section.isDark ? "text-gray-400" : "text-gray-600",
+                              )}
+                            >
+                              <p className={cn("font-medium", section.isDark ? "text-gray-200" : "text-gray-800")}>
+                                {section.right.contact.name}
+                              </p>
+                              <p className="transition-colors duration-300 hover:text-amber-700">
+                                {section.right.contact.address}
+                              </p>
+                              <p className="transition-colors duration-300 hover:text-amber-700">
+                                {section.right.contact.phone}
+                              </p>
+                              <p className="transition-colors duration-300 hover:text-amber-700">
+                                {section.right.contact.email}
+                              </p>
+                              <p className={cn("text-sm", section.isDark ? "text-gray-500" : "text-gray-500")}>
+                                {section.right.contact.org}
+                              </p>
+                            </div>
+                          )}
+                          {section.right.cta && (
+                            <Button
+                              variant="outline"
+                              className={cn(
+                                "border-amber-700 text-amber-700 transition-all duration-300 hover:scale-105 hover:text-white hover:shadow-lg animate-slideInUp",
+                                section.isDark
+                                  ? "hover:bg-amber-500 border-amber-500 text-amber-500"
+                                  : "hover:bg-amber-700",
+                              )}
+                            >
+                              {section.right.cta}
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    {section.right.type === "logo-content" && (
+                      <LogoContent
+                        logoSrc={section.right.logoSrc || ""}
+                        subtitle={section.right.subtitle || ""}
+                        description={section.right.description || ""}
+                        cta={section.right.cta || ""}
+                        activeSection={activeSectionIndex}
+                        sectionIndex={index}
+                        animationDelay={section.right.animationDelay || 0}
+                        isDarkMode={!!section.isDark}
+                      />
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+          )
+        })}
       </div>
     </>
   )
