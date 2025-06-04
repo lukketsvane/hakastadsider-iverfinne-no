@@ -18,8 +18,8 @@ const sections = [
     id: "heim",
     left: {
       type: "image",
-      content: "/images/hardanger-landscape.png",
-      alt: "Hardanger med epleblom",
+      content: "/images/hardanger-blossoms.jpeg",
+      alt: "Hardanger med epleblom og fjord",
       parallax: true,
     },
     right: {
@@ -45,7 +45,7 @@ const sections = [
     },
     right: {
       type: "image",
-      content: "/images/bee-on-apple-blossom.png",
+      content: "/images/bee-apple-blossom.png",
       alt: "Bie på epleblom",
       parallax: true,
     },
@@ -53,6 +53,12 @@ const sections = [
   {
     id: "garden",
     left: {
+      type: "image",
+      content: "/images/farmer-portrait.jpeg",
+      alt: "Gardbrukar blant epleblom",
+      parallax: true,
+    },
+    right: {
       type: "content",
       title: "Garden Hakastad",
       subtitle: "Tradisjon og kvalitet",
@@ -61,72 +67,14 @@ const sections = [
       cta: "Sjå eplesortane",
       animationDelay: 0.3,
     },
-    right: {
-      type: "image",
-      content: "/images/red-apple.png",
-      alt: "Friskt eple frå Hardanger",
-      parallax: true,
-    },
-  },
-  {
-    id: "produkta",
-    left: {
-      type: "product-showcase",
-      items: [
-        {
-          type: "image",
-          content: "/images/cider-bottle-yellow.png",
-          alt: "Sider frå Hardanger Gravenstein",
-          title: "Gravenstein",
-          description: "Fyldig, vinøs og god sødme. Svakt syrleg, lang ettersmak med smak av mandel.",
-          details: "8% alkohol • 9 g/l sukker • Passar til fisk og ljost kjøt",
-        },
-        {
-          type: "image",
-          content: "/images/cider-bottle-red.png",
-          alt: "Sider frå Hardanger Tradisjon",
-          title: "Tradisjon",
-          description: "Saftig med god friskheit, fokusert preg av mogne eple, hint av grøne urter og krydder.",
-          details: "8% alkohol • 13,2 g/l sukker • Passar til aperitiff og skalldyr",
-        },
-      ],
-    },
-    right: {
-      type: "content",
-      title: "Våre Signatursider",
-      subtitle: "Frå eple til sider",
-      description:
-        "Me produserer sider og eplemost av høgste kvalitet. Kvar eplesort har sin eigen smak etter kva sukker-, syre- og ev tannininnnhald den har. Dette gjer at du på Hakastad kan få oppleva mange smakar etter kva du er ute etter.",
-      cta: "Sjå alle produkta",
-      animationDelay: 0.3,
-    },
   },
   {
     id: "opplevingar",
     left: {
-      type: "grid",
-      items: [
-        {
-          type: "image",
-          content: "/images/wine-tasting.png",
-          alt: "Sidersmak i Hardanger",
-        },
-        {
-          type: "image",
-          content: "/images/hardanger-landscape.png",
-          alt: "Epleblom i Hardanger",
-        },
-        {
-          type: "image",
-          content: "/images/apple-products.png",
-          alt: "Siderproduksjon",
-        },
-        {
-          type: "image",
-          content: "/images/red-apple.png",
-          alt: "Eplehaustinga",
-        },
-      ],
+      type: "image",
+      content: "/images/orchard-visitors.jpeg",
+      alt: "Besøkande i eplehagen",
+      parallax: true,
     },
     right: {
       type: "content",
@@ -148,18 +96,16 @@ const sections = [
           content: "/images/gravenstein.png",
           alt: "Gravenstein Sider",
           title: "Gravenstein",
-          description: "Fyldig, vinøs og god sødme. Svakt syrleg, lang ettersmak med smak av mandel.",
+          description: "Fyldig, vinøs og god sødme.",
           details: "8% alkohol • 9 g/l sukker",
-          pairing: "Aperitiff, fisk, ljost kjøt",
         },
         {
           type: "image",
           content: "/images/tradisjon.png",
           alt: "Tradisjon Sider",
           title: "Tradisjon",
-          description: "Saftig med god friskheit, fokusert preg av mogne eple, hint av grøne urter og krydder.",
+          description: "Saftig med god friskheit.",
           details: "8% alkohol • 13,2 g/l sukker",
-          pairing: "Aperitiff, skalldyr, fisk",
         },
         {
           type: "image",
@@ -168,7 +114,6 @@ const sections = [
           title: "Stille Stunder",
           description: "Konsentrert eple.",
           details: "8% alkohol • Under 3 g/l sukker",
-          pairing: "Aperitiff, skalldyr, fisk",
         },
         {
           type: "image",
@@ -177,41 +122,29 @@ const sections = [
           title: "Hylleblomsider",
           description: "Søtleg med god syrebalanse.",
           details: "7,5% alkohol • 36 g/l sukker",
-          pairing: "Aperitiff, ost, dessert",
         },
         {
           type: "image",
           content: "/images/svartsurbaer.png",
           alt: "Svartsurbær",
           title: "Svartsurbær",
-          description: "Lang ettersmak av eple og litt tannin.",
+          description: "Lang ettersmak av eple.",
           details: "8% alkohol • Under 3 g/l sukker",
-          pairing: "Aperitiff, ljost kjøt, grønsaker",
         },
         {
           type: "image",
-          content: "/images/kvitanesen.png",
-          alt: "Kvitanesen Poesider",
-          title: "Kvitanesen",
-          description: "Lang fruktig eplesmak med god syrebalanse.",
-          details: "7,5% alkohol • 20 g/l sukker",
-          pairing: "Aperitiff, skalldyr, fisk",
-        },
-        {
-          type: "image",
-          content: "/images/kvennadokkje.png",
-          alt: "Kvemmadokkje Rosésider",
-          title: "Kvemmadokkje",
-          description: "Frisk eplesmak med innslag av raude bær.",
-          details: "6,5% alkohol • 25 g/l sukker",
-          pairing: "Aperitiff, fisk, ljost kjøt",
+          content: "/images/cider-bottles-outdoor.png",
+          alt: "Sider utandørs",
+          title: "Eplemost",
+          description: "Naturleg eplemost.",
+          details: "Alkoholfri • Naturleg søt",
         },
       ],
     },
     right: {
       type: "content",
       title: "Heile Kolleksjonen",
-      subtitle: "Sju unike sider",
+      subtitle: "Seks unike sider",
       description:
         "Opplev heile spekteret av våre handverksider. Frå den klassiske Gravenstein til den innovative Svartsurbær - kvar flaske fortel si eiga historie om Hardanger sitt terroir og vår lidenskap for kvalitet.",
       animationDelay: 0.6,
@@ -596,9 +529,14 @@ export default function SplitScroll({ onSectionChange }: { onSectionChange: (sec
 
       setScrollProgress(progress)
 
-      parallaxRefs.current.forEach((ref, index) => {
+      parallaxRefs.current.forEach((ref, parallaxElementIndex) => {
         if (ref) {
-          const sectionTop = sectionRefs.current[index]?.offsetTop || 0
+          // Determine the correct section index for this parallax element.
+          // Each section can have up to two parallax elements (left and right).
+          const sectionIndex = Math.floor(parallaxElementIndex / 2);
+          const currentSectionRef = sectionRefs.current[sectionIndex];
+          const sectionTop = currentSectionRef?.offsetTop || 0;
+          
           const offset = (scrollTop - sectionTop) * 0.3
           ref.style.transform = `translateY(${offset}px)`
         }
@@ -625,30 +563,12 @@ export default function SplitScroll({ onSectionChange }: { onSectionChange: (sec
         window.history.pushState(null, "", `#${sections[newActiveSection].id}`)
       }
 
-      // Dark mode logic - for "Opplevingar" and "Alle produkta" sections
-      // We want dark mode for sections 4 (Opplevingar) and 5 (Alle produkta)
-      // And light mode for all other sections
-      const darkSectionStartIndex = 4 // Opplevingar
-      const darkSectionEndIndex = 5 // Alle produkta
+      // Dark mode logic - sections 3 (Opplevingar) and 4 (Alle produkta) should be dark
+      const darkSectionStartIndex = 3 // Opplevingar
+      const darkSectionEndIndex = 4 // Alle produkta
 
-      // Check if we're in or approaching a dark section
       if (newActiveSection >= darkSectionStartIndex && newActiveSection <= darkSectionEndIndex) {
         setIsDarkMode(true)
-      } else if (newActiveSection === darkSectionEndIndex + 1) {
-        // If we're in the contact section (after dark sections), check if we're closer to the top
-        // of the contact section (still dark) or further down (transition to light)
-        const contactSection = sectionRefs.current[darkSectionEndIndex + 1]
-        if (contactSection) {
-          const contactSectionTop = contactSection.offsetTop
-          const distanceFromTop = scrollTop - contactSectionTop
-
-          // If we're in the first 30% of the contact section, still show dark mode
-          if (distanceFromTop < viewportHeight * 0.3) {
-            setIsDarkMode(true)
-          } else {
-            setIsDarkMode(false)
-          }
-        }
       } else {
         setIsDarkMode(false)
       }
@@ -746,13 +666,13 @@ export default function SplitScroll({ onSectionChange }: { onSectionChange: (sec
             id={section.id}
             ref={(el) => (sectionRefs.current[index] = el)}
             className={cn(
-              "flex h-screen w-full transition-all duration-1000 ease-in-out relative",
-              "max-[375px]:flex-col max-[375px]:min-h-screen max-[375px]:h-auto",
+              "flex h-screen w-full transition-all duration-1000 ease-in-out relative", // Desktop: flex-row, h-screen
+              "max-[375px]:flex-col max-[375px]:h-screen", // Mobile: flex-col, h-screen. Panes adjust to 50% height each.
             )}
             style={{ scrollSnapAlign: "start" }}
           >
             {/* Venstre side */}
-            <div className="relative h-full w-1/2 max-[375px]:w-full max-[375px]:h-screen overflow-hidden border-r border-gray-200 max-[375px]:border-r-0 max-[375px]:border-b">
+            <div className="relative h-full w-1/2 max-[375px]:w-full max-[375px]:h-1/2 overflow-hidden border-r border-gray-200 max-[375px]:border-r-0 max-[375px]:border-b">
               {section.left.type === "image" && (
                 <div
                   ref={(el) => (section.left.parallax ? (parallaxRefs.current[index * 2] = el) : null)}
@@ -871,7 +791,7 @@ export default function SplitScroll({ onSectionChange }: { onSectionChange: (sec
             </div>
 
             {/* Høgre side */}
-            <div className="relative h-full w-1/2 max-[375px]:w-full max-[375px]:h-screen overflow-hidden">
+            <div className="relative h-full w-1/2 max-[375px]:w-full max-[375px]:h-1/2 overflow-hidden">
               {section.right.type === "image" && (
                 <div
                   ref={(el) => (section.right.parallax ? (parallaxRefs.current[index * 2 + 1] = el) : null)}

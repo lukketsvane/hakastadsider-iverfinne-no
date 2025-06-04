@@ -46,20 +46,23 @@ export default function Home() {
       <div
         className={cn(
           "absolute left-1/2 top-8 z-50 -translate-x-1/2 transform transition-all duration-500",
-          scrolled ? "scale-64 top-4 md:scale-64 md:top-4" : "scale-72 top-8 md:scale-72 md:top-8",
-          // Mobile scaling - much much smaller (1/4 of previous size)
-          "scale-6 md:scale-72",
+          // Mobile scaling: "scale-6" (0.06) as per your comment, very small. Adjusted top.
+          "scale-[0.6] top-2",
+          // Desktop/MD screens: significantly smaller than before, and shrinks further on scroll.
+          scrolled
+            ? "md:scale-[0.4] md:top-2" // e.g., 40% scale when scrolled
+            : "md:scale-[0.5] md:top-4", // e.g., 50% scale when not scrolled
         )}
       >
         <Image
           src="/images/ulvik-logo.svg"
           alt="Ulvik Frukt & Cideri"
-          width={128}
-          height={42}
+          width={128} // Base width, actual size controlled by scale
+          height={42} // Base height, actual size controlled by scale
           className={cn(
             "relative h-auto w-auto transition-all duration-500 hover:scale-102",
-            // Invert logo when in dark mode
-            activeSection >= 4 && activeSection <= 6 ? "filter invert brightness-0 contrast-100" : "",
+            // Invert logo when in dark mode (sections 3-4: Opplevingar and Alle produkta)
+            activeSection >= 3 && activeSection <= 4 ? "filter invert brightness-0 contrast-100" : "",
           )}
           priority
         />
@@ -83,19 +86,7 @@ export default function Home() {
       >
         <div className="relative p-8 pt-24">
           <nav className="flex flex-col space-y-8">
-            {[
-              "Heim",
-              "Tradisjon",
-              "Terroir",
-              "Handverk",
-              "Kvalitet",
-              "Garden",
-              "Produkta",
-              "Opplevingar",
-              "Eplesortane",
-              "Alle Produkta",
-              "Kontakt",
-            ].map((item, index) => (
+            {["Heim", "Tradisjon", "Garden", "Opplevingar", "Alle Produkta", "Kontakt"].map((item, index) => (
               <a
                 key={item}
                 href={`#${item.toLowerCase().replace(" ", "-")}`}
