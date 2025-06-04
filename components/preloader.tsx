@@ -39,27 +39,13 @@ export default function Preloader() {
         />
       </div>
 
-      {/* Progress bar with properly aligned circles */}
+      {/* Simplified progress bar */}
       <div className="relative w-80">
         <div className="h-1 w-full rounded-full bg-gray-200 overflow-hidden">
           <div
             className="h-full bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700 transition-all duration-300 ease-out"
             style={{ width: `${progress}%` }}
           ></div>
-        </div>
-
-        {/* Properly aligned circles */}
-        <div className="absolute -top-1.5 left-0 h-4 w-4 rounded-full bg-amber-600 flex items-center justify-center">
-          <div className="h-2 w-2 rounded-full bg-white"></div>
-        </div>
-        <div
-          className="absolute -top-1.5 h-4 w-4 rounded-full bg-amber-600 transition-all duration-300 flex items-center justify-center"
-          style={{ left: `calc(${progress}% - 8px)` }}
-        >
-          <div className="h-2 w-2 rounded-full bg-white"></div>
-        </div>
-        <div className="absolute -top-1.5 right-0 h-4 w-4 rounded-full bg-gray-300 flex items-center justify-center">
-          <div className="h-2 w-2 rounded-full bg-white"></div>
         </div>
       </div>
     </div>

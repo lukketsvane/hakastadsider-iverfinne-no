@@ -47,8 +47,8 @@ export default function Home() {
         className={cn(
           "absolute left-1/2 top-8 z-50 -translate-x-1/2 transform transition-all duration-500",
           scrolled ? "scale-64 top-4 md:scale-64 md:top-4" : "scale-72 top-8 md:scale-72 md:top-8",
-          // Mobile scaling - much smaller
-          "scale-25 md:scale-72",
+          // Mobile scaling - much much smaller (1/4 of previous size)
+          "scale-6 md:scale-72",
         )}
       >
         <Image
@@ -58,8 +58,8 @@ export default function Home() {
           height={42}
           className={cn(
             "relative h-auto w-auto transition-all duration-500 hover:scale-102",
-            // Invert logo on dark sections
-            activeSection === 10 ? "filter invert brightness-0 contrast-100" : "",
+            // Invert logo when in dark mode
+            activeSection >= 4 && activeSection <= 6 ? "filter invert brightness-0 contrast-100" : "",
           )}
           priority
         />
@@ -123,7 +123,7 @@ export default function Home() {
         />
       )}
 
-      <SplitScroll setActiveSection={setActiveSection} />
+      <SplitScroll onSectionChange={setActiveSection} />
     </main>
   )
 }

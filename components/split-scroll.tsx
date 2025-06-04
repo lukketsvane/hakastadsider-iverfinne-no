@@ -8,7 +8,11 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import MapWidget from "@/components/map-widget"
 
-// Ekte innhald frå Ulvik Frukt & Cideri på nynorsk
+// First, let's reduce the number of sections by removing empty placeholders
+// We'll keep only the essential sections with actual content
+
+// Replace the sections array with this simplified version:
+
 const sections = [
   {
     id: "heim",
@@ -41,63 +45,9 @@ const sections = [
     },
     right: {
       type: "image",
-      content: "/images/bee-on-blossom.jpeg",
+      content: "/images/bee-on-apple-blossom.png",
       alt: "Bie på epleblom",
       parallax: true,
-    },
-  },
-  {
-    id: "terroir",
-    left: {
-      type: "image",
-      content: "/placeholder.svg?height=1080&width=960",
-      alt: "Hardanger fjordlandskap",
-      parallax: true,
-    },
-    right: {
-      type: "content",
-      title: "Unikt Terroir",
-      subtitle: "Hardanger sitt særpreg",
-      description:
-        "Hardanger sitt unike klima med milde vintrar, kjølige somrar og lang vekstsesong gjev eplene våre ein særeigen karakter. Fjorden, fjella og den reine lufta skapar optimale vilkår for epleproduксjon av verdsklass.",
-      cta: "Utforsk terroiret",
-      animationDelay: 0.4,
-    },
-  },
-  {
-    id: "handverk",
-    left: {
-      type: "content",
-      title: "Handverkstradisjon",
-      subtitle: "Frå jord til flaske",
-      description:
-        "Kvar flaske representerer månader med omtanke og handverk. Frå det me plukkar eplene på garden til den ferdige sideren blir tappa på flaske, følgjer me gamle tradisjonar kombinert med moderne kunnskap.",
-      cta: "Sjå prosessen",
-      animationDelay: 0.3,
-    },
-    right: {
-      type: "image",
-      content: "/placeholder.svg?height=1080&width=960",
-      alt: "Tradisjonell siderproduksjon",
-      parallax: true,
-    },
-  },
-  {
-    id: "kvalitet",
-    left: {
-      type: "image",
-      content: "/placeholder.svg?height=1080&width=960",
-      alt: "Epleblom i Hardanger",
-      parallax: true,
-    },
-    right: {
-      type: "content",
-      title: "Kvalitet i Fokus",
-      subtitle: "Berre det beste",
-      description:
-        "Me vel ut berre dei beste eplene frå våre eigne tre. Kvar eple blir handsortert og kontrollert før det går vidare i produksjonen. Dette sikrar at kvar flaske held den høgste standarden.",
-      cta: "Les om kvalitet",
-      animationDelay: 0.4,
     },
   },
   {
@@ -162,15 +112,13 @@ const sections = [
           alt: "Sidersmak i Hardanger",
         },
         {
-          type: "video",
+          type: "image",
           content: "/images/hardanger-landscape.png",
-          videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
           alt: "Epleblom i Hardanger",
         },
         {
-          type: "video",
+          type: "image",
           content: "/images/apple-products.png",
-          videoUrl: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
           alt: "Siderproduksjon",
         },
         {
@@ -188,24 +136,6 @@ const sections = [
         "Kom og opplev Hardanger og smak på våre eksepsjonelle sider og eplemost. Me tilbyr omvising på garden og sidersmak i dei vakre omgivnadene i Hardanger. Opplev tradisjonen og handverket bak kvar flaske.",
       cta: "Bestill omvising",
       animationDelay: 0.4,
-    },
-  },
-  {
-    id: "eplesortane",
-    left: {
-      type: "content",
-      title: "Eplesortane våre",
-      subtitle: "Tradisjonelle sortar",
-      description:
-        "GRAVENSTEIN kom frå Danmark til Hardanger i 1792 og vart hovudsort på 1900-talet. DISCOVERY er svært aromatisk med god sødme. JAMES GRIEVE gjev ein rik og syrleg smak. AROMA er 'bankersen' som alle likar.",
-      cta: "Les om sortane",
-      animationDelay: 0.5,
-    },
-    right: {
-      type: "image",
-      content: "/images/hardanger-landscape.png",
-      alt: "Epleblom i Hardanger",
-      parallax: true,
     },
   },
   {
@@ -459,6 +389,7 @@ const LogoContent = ({
   activeSection,
   sectionIndex,
   animationDelay,
+  isDarkMode,
 }: {
   logoSrc: string
   subtitle: string
@@ -467,9 +398,10 @@ const LogoContent = ({
   activeSection: number
   sectionIndex: number
   animationDelay: number
+  isDarkMode: boolean
 }) => {
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center p-12 text-left">
+    <div className="flex h-full w-full flex-col items-center justify-center p-6 max-[375px]:p-4 text-left">
       <div
         className={cn(
           "transform transition-all duration-1200 ease-out",
@@ -486,8 +418,22 @@ const LogoContent = ({
             className="h-auto w-auto transition-all duration-300 hover:scale-102"
           />
         </div>
-        <h3 className="mb-6 text-lg font-light uppercase tracking-widest text-amber-700 animate-fadeIn">{subtitle}</h3>
-        <p className="mb-8 max-w-lg text-lg leading-relaxed text-gray-600 animate-slideInUp">{description}</p>
+        <h3
+          className={cn(
+            "mb-6 text-sm font-light uppercase tracking-widest animate-fadeIn transition-colors duration-500",
+            isDarkMode ? "text-amber-400" : "text-amber-700",
+          )}
+        >
+          {subtitle}
+        </h3>
+        <p
+          className={cn(
+            "mb-8 max-w-lg text-lg leading-relaxed animate-slideInUp transition-colors duration-500",
+            isDarkMode ? "text-gray-300" : "text-gray-600",
+          )}
+        >
+          {description}
+        </p>
         <Button
           variant="outline"
           className="border-amber-700 text-amber-700 transition-all duration-300 hover:scale-105 hover:bg-amber-700 hover:text-white hover:shadow-lg animate-slideInUp"
@@ -504,7 +450,8 @@ const ProductShowcase = ({
   items,
   activeSection,
   sectionIndex,
-}: { items: any[]; activeSection: number; sectionIndex: number }) => {
+  isDarkMode,
+}: { items: any[]; activeSection: number; sectionIndex: number; isDarkMode: boolean }) => {
   const ciderItems = items.slice(0, 2)
 
   return (
@@ -528,9 +475,32 @@ const ProductShowcase = ({
             />
           </div>
           <div className="flex-1">
-            <h3 className="text-2xl font-light text-gray-800 mb-3">{item.title}</h3>
-            <p className="text-base text-gray-600 mb-3 leading-relaxed">{item.description}</p>
-            {item.details && <p className="text-sm text-amber-700 font-medium">{item.details}</p>}
+            <h3
+              className={cn(
+                "text-2xl font-light mb-3 transition-colors duration-500",
+                isDarkMode ? "text-white" : "text-gray-800",
+              )}
+            >
+              {item.title}
+            </h3>
+            <p
+              className={cn(
+                "text-base mb-3 leading-relaxed transition-colors duration-500",
+                isDarkMode ? "text-gray-300" : "text-gray-600",
+              )}
+            >
+              {item.description}
+            </p>
+            {item.details && (
+              <p
+                className={cn(
+                  "text-sm font-medium transition-colors duration-500",
+                  isDarkMode ? "text-amber-400" : "text-amber-700",
+                )}
+              >
+                {item.details}
+              </p>
+            )}
           </div>
         </div>
       ))}
@@ -551,7 +521,7 @@ const ProductGrid = ({
           <div
             key={i}
             className={cn(
-              "group relative flex flex-col items-center p-4 bg-white bg-opacity-10 backdrop-blur-sm rounded-lg shadow-sm hover:shadow-md transition-all duration-500 border border-white border-opacity-20",
+              "group relative flex flex-col items-center p-3 max-[375px]:p-2 bg-black bg-opacity-20 backdrop-blur-sm rounded-lg shadow-sm hover:shadow-md transition-all duration-500 border border-white border-opacity-10",
               activeSection === sectionIndex ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0",
             )}
             style={{ transitionDelay: `${i * 100}ms` }}
@@ -575,11 +545,12 @@ const ProductGrid = ({
   )
 }
 
-export default function SplitScroll() {
+export default function SplitScroll({ onSectionChange }: { onSectionChange: (section: number) => void }) {
   const [activeSection, setActiveSection] = useState(0)
   const [isScrolling, setIsScrolling] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
+  const [isDarkMode, setIsDarkMode] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([])
   const parallaxRefs = useRef<(HTMLDivElement | null)[]>([])
@@ -617,6 +588,7 @@ export default function SplitScroll() {
     const container = containerRef.current
     if (!container) return
 
+    // Replace the useEffect that handles scroll and dark mode with this updated version:
     const handleScroll = () => {
       const scrollTop = container.scrollTop
       const scrollHeight = container.scrollHeight - container.clientHeight
@@ -652,6 +624,34 @@ export default function SplitScroll() {
         setActiveSection(newActiveSection)
         window.history.pushState(null, "", `#${sections[newActiveSection].id}`)
       }
+
+      // Dark mode logic - for "Opplevingar" and "Alle produkta" sections
+      // We want dark mode for sections 4 (Opplevingar) and 5 (Alle produkta)
+      // And light mode for all other sections
+      const darkSectionStartIndex = 4 // Opplevingar
+      const darkSectionEndIndex = 5 // Alle produkta
+
+      // Check if we're in or approaching a dark section
+      if (newActiveSection >= darkSectionStartIndex && newActiveSection <= darkSectionEndIndex) {
+        setIsDarkMode(true)
+      } else if (newActiveSection === darkSectionEndIndex + 1) {
+        // If we're in the contact section (after dark sections), check if we're closer to the top
+        // of the contact section (still dark) or further down (transition to light)
+        const contactSection = sectionRefs.current[darkSectionEndIndex + 1]
+        if (contactSection) {
+          const contactSectionTop = contactSection.offsetTop
+          const distanceFromTop = scrollTop - contactSectionTop
+
+          // If we're in the first 30% of the contact section, still show dark mode
+          if (distanceFromTop < viewportHeight * 0.3) {
+            setIsDarkMode(true)
+          } else {
+            setIsDarkMode(false)
+          }
+        }
+      } else {
+        setIsDarkMode(false)
+      }
     }
 
     container.addEventListener("scroll", handleScroll, { passive: true })
@@ -675,6 +675,11 @@ export default function SplitScroll() {
     scrollToSection(nextSection)
   }
 
+  // Notify parent of section changes
+  useEffect(() => {
+    onSectionChange(activeSection)
+  }, [activeSection, onSectionChange])
+
   return (
     <>
       {isLoading && (
@@ -691,21 +696,31 @@ export default function SplitScroll() {
         style={{ width: `${scrollProgress * 100}%` }}
       />
 
+      {/* Replace the container div with this updated version: */}
       <div
         ref={containerRef}
-        className="h-full w-full overflow-y-auto overflow-x-hidden scroll-smooth"
+        className={cn(
+          "h-full w-full overflow-y-auto overflow-x-hidden scroll-smooth relative transition-colors duration-700",
+          isDarkMode ? "bg-black" : "bg-[#f8f5f0]",
+        )}
         style={{ scrollSnapType: "y mandatory" }}
       >
-        {/* Framgangsindikator */}
+        {/* Replace the progress indicator with this simplified version: */}
         <div className="absolute right-8 top-1/2 z-30 -translate-y-1/2 transform">
           <div className="flex flex-col space-y-4">
             {sections.map((_, index) => {
               const isActive = index <= activeSection
-
               return (
                 <div key={index} className="relative">
                   <svg width="16" height="16" className="transform transition-all duration-500">
-                    <circle cx="8" cy="8" r="6" fill="none" stroke="#d1d5db" strokeWidth="1.5" />
+                    <circle
+                      cx="8"
+                      cy="8"
+                      r="6"
+                      fill="none"
+                      stroke={isDarkMode ? "#4b5563" : "#d1d5db"}
+                      strokeWidth="1.5"
+                    />
                     <circle
                       cx="8"
                       cy="8"
@@ -731,11 +746,8 @@ export default function SplitScroll() {
             id={section.id}
             ref={(el) => (sectionRefs.current[index] = el)}
             className={cn(
-              "flex h-screen w-full transition-all duration-1000 ease-in-out",
+              "flex h-screen w-full transition-all duration-1000 ease-in-out relative",
               "max-[375px]:flex-col max-[375px]:min-h-screen max-[375px]:h-auto",
-              section.id === "alle-produkta"
-                ? "bg-gradient-to-r from-[#1a2639] via-[#1e2c42] to-[#1a2639] text-white"
-                : "bg-[#f8f5f0] text-gray-900",
             )}
             style={{ scrollSnapAlign: "start" }}
           >
@@ -760,7 +772,7 @@ export default function SplitScroll() {
               )}
 
               {section.left.type === "content" && (
-                <div className="flex h-full w-full flex-col items-center justify-center p-12 text-right">
+                <div className="flex h-full w-full flex-col items-center justify-center p-6 max-[375px]:p-4 text-right">
                   <div
                     className={cn(
                       "transform transition-all duration-1000",
@@ -768,11 +780,30 @@ export default function SplitScroll() {
                     )}
                     style={{ transitionDelay: `${(section.left.animationDelay || 0) * 1000}ms` }}
                   >
-                    <h3 className="mb-2 text-sm font-light uppercase tracking-widest text-amber-700 animate-fadeIn">
+                    <h3
+                      className={cn(
+                        "mb-2 text-sm font-light uppercase tracking-widest animate-fadeIn transition-colors duration-500",
+                        isDarkMode ? "text-amber-400" : "text-amber-700",
+                      )}
+                    >
                       {section.left.subtitle}
                     </h3>
-                    <h2 className="mb-6 text-4xl font-light animate-slideInUp">{section.left.title}</h2>
-                    <p className="mb-8 max-w-md text-gray-600 animate-slideInUp">{section.left.description}</p>
+                    <h2
+                      className={cn(
+                        "mb-6 text-4xl font-light animate-slideInUp transition-colors duration-500",
+                        isDarkMode ? "text-white" : "text-gray-900",
+                      )}
+                    >
+                      {section.left.title}
+                    </h2>
+                    <p
+                      className={cn(
+                        "mb-8 max-w-md animate-slideInUp transition-colors duration-500",
+                        isDarkMode ? "text-gray-300" : "text-gray-600",
+                      )}
+                    >
+                      {section.left.description}
+                    </p>
                     <Button
                       variant="outline"
                       className="border-amber-700 text-amber-700 transition-all duration-300 hover:scale-105 hover:bg-amber-700 hover:text-white hover:shadow-lg animate-slideInUp"
@@ -784,7 +815,12 @@ export default function SplitScroll() {
               )}
 
               {section.left.type === "product-showcase" && (
-                <ProductShowcase items={section.left.items} activeSection={activeSection} sectionIndex={index} />
+                <ProductShowcase
+                  items={section.left.items}
+                  activeSection={activeSection}
+                  sectionIndex={index}
+                  isDarkMode={isDarkMode}
+                />
               )}
 
               {section.left.type === "product-grid" && (
@@ -821,9 +857,9 @@ export default function SplitScroll() {
                           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-60" />
                         </div>
                       )}
-                      {item.type === "video" && item.videoUrl && (
+                      {item.type === "video" && (
                         <VideoPlayer
-                          src={item.videoUrl}
+                          src={item.content || "/placeholder.svg"}
                           poster={item.content || "/placeholder.svg"}
                           alt={item.alt || ""}
                         />
@@ -855,7 +891,7 @@ export default function SplitScroll() {
               )}
 
               {section.right.type === "content" && (
-                <div className="flex h-full w-full flex-col items-center justify-center p-12 text-left">
+                <div className="flex h-full w-full flex-col items-center justify-center p-6 max-[375px]:p-4 text-left">
                   <div
                     className={cn(
                       "transform transition-all duration-1000",
@@ -865,24 +901,24 @@ export default function SplitScroll() {
                   >
                     <h3
                       className={cn(
-                        "mb-2 text-sm font-light uppercase tracking-widest animate-fadeIn",
-                        section.id === "alle-produkta" ? "text-amber-400" : "text-amber-700",
+                        "mb-2 text-sm font-light uppercase tracking-widest animate-fadeIn transition-colors duration-500",
+                        isDarkMode ? "text-amber-400" : "text-amber-700",
                       )}
                     >
                       {section.right.subtitle}
                     </h3>
                     <h2
                       className={cn(
-                        "mb-6 text-4xl font-light animate-slideInUp",
-                        section.id === "alle-produkta" ? "text-white" : "text-gray-900",
+                        "mb-6 text-4xl font-light animate-slideInUp transition-colors duration-500",
+                        isDarkMode ? "text-white" : "text-gray-900",
                       )}
                     >
                       {section.right.title}
                     </h2>
                     <p
                       className={cn(
-                        "mb-8 max-w-md animate-slideInUp",
-                        section.id === "alle-produkta" ? "text-gray-300" : "text-gray-600",
+                        "mb-8 max-w-md animate-slideInUp transition-colors duration-500",
+                        isDarkMode ? "text-gray-300" : "text-gray-600",
                       )}
                     >
                       {section.right.description}
@@ -922,6 +958,7 @@ export default function SplitScroll() {
                   activeSection={activeSection}
                   sectionIndex={index}
                   animationDelay={section.right.animationDelay || 0}
+                  isDarkMode={isDarkMode}
                 />
               )}
             </div>
