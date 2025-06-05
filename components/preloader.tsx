@@ -39,15 +39,7 @@ export default function Preloader() {
         />
       </div>
 
-      {/* Simplified progress bar */}
-      <div className="relative w-80">
-        <div className="h-1 w-full rounded-full bg-gray-200 overflow-hidden">
-          <div
-            className="h-full bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700 transition-all duration-300 ease-out"
-            style={{ width: `${progress}%` }}
-          ></div>
-        </div>
-      </div>
+
     </div>
   )
 }

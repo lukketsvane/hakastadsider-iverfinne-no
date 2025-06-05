@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
+    "baseUrl": ".", // <-- ADD THIS: Sets the base for path resolution
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    "target": "ES6",
+    "target": "ESNext", // <-- SUGGESTION: Use ESNext or a more recent version like "ES2020"
+                      // "ES6" is okay, but newer targets are common. Next.js handles transpilation.
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "bundler", // Good! This is the recommended setting for modern Next.js
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -19,7 +21,7 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"] // This now clearly means ./ from the project root
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
