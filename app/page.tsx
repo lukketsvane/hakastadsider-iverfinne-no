@@ -1,58 +1,61 @@
 // FILE: app/page.tsx
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Menu, X, Instagram, Facebook } from "lucide-react"
+import { useEffect, useState } from "react";
+import { Menu, X, Instagram, Facebook } from "lucide-react";
 
-import Preloader from "@/components/preloader"
-import SplitScroll from "@/components/split-scroll"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import Preloader from "@/components/preloader";
+import SplitScroll from "@/components/split-scroll";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface SectionChangeData {
-  activeSectionIndex: number
-  currentLabelColor: string | null
-  isDarkSection: boolean
+  activeSectionIndex: number;
+  currentLabelColor: string | null;
+  isDarkSection: boolean;
 }
 
 export default function Home() {
-  const [loading, setLoading] = useState(true)
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const [activeLabelColor, setActiveLabelColor] = useState<string | null>(null)
-  const [isDarkSection, setIsDarkSection] = useState(false)
+  const [loading, setLoading] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [activeLabelColor, setActiveLabelColor] = useState<string | null>(null);
+  const [isDarkSection, setIsDarkSection] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false)
-    }, 3000)
-
     const handleWindowScroll = () => {
       setScrolled(window.scrollY > 50);
     };
     window.addEventListener("scroll", handleWindowScroll);
 
     return () => {
-      clearTimeout(timer)
-      window.removeEventListener("scroll", handleWindowScroll)
-    }
-  }, [])
+      window.removeEventListener("scroll", handleWindowScroll);
+    };
+  }, []);
+
+  const handlePreloaderComplete = () => {
+    setLoading(false);
+  };
 
   const toggleMenu = () => {
-    setMenuOpen(!menuOpen)
-  }
+    setMenuOpen(!menuOpen);
+  };
 
   const handleSectionChange = (data: SectionChangeData) => {
-    setActiveLabelColor(data.currentLabelColor)
-    setIsDarkSection(data.isDarkSection)
-  }
+    setActiveLabelColor(data.currentLabelColor);
+    setIsDarkSection(data.isDarkSection);
+  };
 
   if (loading) {
-    return <Preloader />
+    return <Preloader />;
   }
 
-  const logoBaseColor = "#000000"
-  const logoColor = activeLabelColor ? activeLabelColor : isDarkSection ? "#FFFFFF" : logoBaseColor;
+  const logoBaseColor = "#000000";
+  const logoColor = activeLabelColor
+    ? activeLabelColor
+    : isDarkSection
+      ? "#FFFFFF"
+      : logoBaseColor;
 
   return (
     <main className="relative h-screen w-full overflow-hidden bg-brandBeige">
@@ -69,9 +72,12 @@ export default function Home() {
             backgroundColor: logoColor,
             maskImage: "url(/images/ulvik-logo.svg)",
             WebkitMaskImage: "url(/images/ulvik-logo.svg)",
-            maskSize: "contain", WebkitMaskSize: "contain",
-            maskRepeat: "no-repeat", WebkitMaskRepeat: "no-repeat",
-            maskPosition: "center", WebkitMaskPosition: "center",
+            maskSize: "contain",
+            WebkitMaskSize: "contain",
+            maskRepeat: "no-repeat",
+            WebkitMaskRepeat: "no-repeat",
+            maskPosition: "center",
+            WebkitMaskPosition: "center",
           }}
           aria-label="Ulvik Frukt & Cideri Logo"
         />
@@ -81,8 +87,8 @@ export default function Home() {
       <Button
         variant="ghost"
         className={cn(
-            "absolute right-6 top-6 z-50 h-20 w-20 rounded-full p-0 transition-all duration-300 hover:scale-105 hidden md:flex items-center justify-center bg-transparent hover:bg-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-opacity-50",
-            // Adjust padding/size for the icon itself if needed within the button
+          "absolute right-6 top-6 z-50 h-20 w-20 rounded-full p-0 transition-all duration-300 hover:scale-105 hidden md:flex items-center justify-center bg-transparent hover:bg-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-opacity-50",
+          // Adjust padding/size for the icon itself if needed within the button
         )}
         onClick={toggleMenu}
         aria-label={menuOpen ? "Lukk meny" : "Opne meny"}
@@ -90,9 +96,19 @@ export default function Home() {
       >
         <div className="relative">
           {menuOpen ? (
-            <X className={cn("h-10 w-10", isDarkSection ? "text-white" : "text-black")} />
+            <X
+              className={cn(
+                "h-10 w-10",
+                isDarkSection ? "text-white" : "text-black",
+              )}
+            />
           ) : (
-            <Menu className={cn("h-10 w-10", isDarkSection ? "text-white" : "text-black")} />
+            <Menu
+              className={cn(
+                "h-10 w-10",
+                isDarkSection ? "text-white" : "text-black",
+              )}
+            />
           )}
         </div>
       </Button>
@@ -106,10 +122,15 @@ export default function Home() {
         <div className="relative p-8 pt-24 h-full flex flex-col">
           <nav className="flex flex-col space-y-6 flex-grow overflow-y-auto pb-10">
             {[
-              "Heim", "Tradisjon", "Garden", "Opplevingar",
-              "Var-Tradisjon-Sider", "Var-Gravenstein-Sider",
+              "Heim",
+              "Tradisjon",
+              "Garden",
+              "Opplevingar",
+              "Var-Tradisjon-Sider",
+              "Var-Gravenstein-Sider",
               "Alle-Produkta",
-              "Eplemost-Info", "Sider-Info",
+              "Eplemost-Info",
+              "Sider-Info",
               // "Inspirasjon", // Removed
               "Kontakt",
             ].map((item) => (
@@ -119,7 +140,9 @@ export default function Home() {
                 className="group relative text-lg font-light transition-all duration-300 hover:text-amber-700 hover:translate-x-1.5"
                 onClick={() => setMenuOpen(false)}
               >
-                <span className="relative z-10">{item.replace(/-/g, " ").replace("Info", "")}</span>
+                <span className="relative z-10">
+                  {item.replace(/-/g, " ").replace("Info", "")}
+                </span>
                 <div className="absolute left-0 top-1/2 h-px w-0 bg-amber-700 transition-all duration-300 group-hover:w-6 transform -translate-y-1/2"></div>
               </a>
             ))}
@@ -136,5 +159,5 @@ export default function Home() {
 
       <SplitScroll onSectionChange={handleSectionChange} />
     </main>
-  )
+  );
 }
