@@ -27,10 +27,23 @@ export default function Home() {
     const handleWindowScroll = () => {
       setScrolled(window.scrollY > 50);
     };
+
+    // iOS address bar hiding
+    const handleResize = () => {
+      // Set initial viewport height for iOS
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    };
+
+    handleResize();
     window.addEventListener("scroll", handleWindowScroll);
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("orientationchange", handleResize);
 
     return () => {
       window.removeEventListener("scroll", handleWindowScroll);
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", handleResize);
     };
   }, []);
 
