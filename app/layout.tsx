@@ -31,7 +31,7 @@ const playfairDisplay = Playfair_Display({
 });
 
 // Haboro Contrast-like font (clean sans-serif)
-const sourceSansPro = Source_Sans_Pro({
+const sourceSans3 = Source_Sans_3({
   subsets: ["latin"],
   weight: ["200", "300", "400", "600", "700", "900"],
   style: ["normal", "italic"],
