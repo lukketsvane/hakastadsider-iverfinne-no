@@ -162,7 +162,11 @@ export default function Home() {
         />
       )}
 
-      <SplitScroll onSectionChange={handleSectionChange} />
+      <SplitScroll
+        onSectionChange={handleSectionChange}
+        activeLabelColor={activeLabelColor}
+        isDarkSection={isDarkSection}
+      />
     </main>
   );
 }
