@@ -111,7 +111,8 @@ const sections: SectionDefinition[] = [
     id: "garden",
     left: {
       type: "image",
-      content: "/images/farmer-portrait.jpeg",
+      content:
+        "https://cdn.builder.io/api/v1/image/assets%2F710ef2426b47492d85e479b0bfe5e2d6%2F7f6c49c773934a14bc479d23fcf44bb1",
       alt: "Gardbrukar blant epleblom",
       parallax: true,
     },
