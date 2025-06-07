@@ -59,6 +59,23 @@
       var(--font-haboro-contrast), "Source Sans Pro", "Helvetica Neue", Arial,
       sans-serif;
   }
+
+  /* iOS viewport height fix */
+  :root {
+    --vh: 1vh;
+  }
+
+  .min-h-screen-ios {
+    min-height: 100vh;
+    min-height: calc(var(--vh, 1vh) * 100);
+  }
+
+  /* Hide address bar on scroll for better mobile experience */
+  @supports (-webkit-touch-callout: none) {
+    .mobile-full-height {
+      height: -webkit-fill-available;
+    }
+  }
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
