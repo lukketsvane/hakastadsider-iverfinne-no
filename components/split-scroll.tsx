@@ -726,14 +726,6 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
 
   return (
     <>
-      {isLoading && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black bg-opacity-50">
-          <div className="flex flex-col items-center space-y-4">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-amber-700 border-t-transparent"></div>
-            <p className="text-white">Lastar...</p>
-          </div>
-        </div>
-      )}
       <div
         className="fixed left-0 top-0 z-40 h-1 bg-amber-700 transition-all duration-300"
         style={{ width: `${scrollProgress * 100}%` }}
