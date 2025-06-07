@@ -40,6 +40,8 @@ interface SectionChangeData {
 
 interface SplitScrollProps {
   onSectionChange: (data: SectionChangeData) => void;
+  activeLabelColor?: string | null;
+  isDarkSection?: boolean;
 }
 
 const TRADISJON_LABEL_COLOR = "#A42F2A";
