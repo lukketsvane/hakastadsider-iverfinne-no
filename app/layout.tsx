@@ -1,33 +1,56 @@
 // FILE: app/layout.tsx
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter, Spectral } from "next/font/google"
+import type React from "react";
+import type { Metadata } from "next";
+import {
+  Inter,
+  Spectral,
+  Playfair_Display,
+  Source_Sans_Pro,
+} from "next/font/google";
 
-import "./globals.css"
+import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
-})
+});
 
 const spectral = Spectral({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
   style: ["normal", "italic"],
   variable: "--font-spectral",
-})
+});
+
+// Haboro-like font (elegant serif)
+const playfairDisplay = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"],
+  variable: "--font-haboro",
+});
+
+// Haboro Contrast-like font (clean sans-serif)
+const sourceSansPro = Source_Sans_Pro({
+  subsets: ["latin"],
+  weight: ["200", "300", "400", "600", "700", "900"],
+  style: ["normal", "italic"],
+  variable: "--font-haboro-contrast",
+});
 
 export const metadata: Metadata = {
   title: "Ulvik Frukt & Cideri - Sider frå Hardanger",
   description:
     "Familiebedrift på garden Hakastad i Ulvik. Me produserer handverkssider og eplemost av høgste kvalitet frå tradisjonelle eplesortane i Hardanger.",
-  keywords: "sider, cideri, Hardanger, Ulvik, eple, handverk, tradisjon, Gravenstein, familiebedrift",
+  keywords:
+    "sider, cideri, Hardanger, Ulvik, eple, handverk, tradisjon, Gravenstein, familiebedrift",
   authors: [{ name: "Ulvik Frukt & Cideri" }],
   creator: "Ulvik Frukt & Cideri",
   publisher: "Ulvik Frukt & Cideri",
   openGraph: {
     title: "Ulvik Frukt & Cideri - Sider frå Hardanger",
-    description: "Familiebedrift på garden Hakastad i Ulvik. Handverkssider og eplemost av høgste kvalitet.",
+    description:
+      "Familiebedrift på garden Hakastad i Ulvik. Handverkssider og eplemost av høgste kvalitet.",
     url: "https://ulvik-frukt-cideri.no",
     siteName: "Ulvik Frukt & Cideri",
     locale: "nn_NO",
@@ -36,7 +59,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Ulvik Frukt & Cideri - Sider frå Hardanger",
-    description: "Familiebedrift på garden Hakastad i Ulvik. Handverkssider og eplemost av høgste kvalitet.",
+    description:
+      "Familiebedrift på garden Hakastad i Ulvik. Handverkssider og eplemost av høgste kvalitet.",
   },
   robots: {
     index: true,
@@ -49,16 +73,19 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-    generator: 'v0.dev'
-}
+  generator: "v0.dev",
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
-    <html lang="nn" className={`${inter.variable} ${spectral.variable}`}>
+    <html
+      lang="nn"
+      className={`${inter.variable} ${spectral.variable} ${playfairDisplay.variable} ${sourceSansPro.variable}`}
+    >
       {/* Ensure no leading/trailing whitespace directly inside <head> */}
       <head>
         <link rel="icon" href="/favicon.ico" />
@@ -70,7 +97,9 @@ export default function RootLayout({
         <meta name="theme-color" content="#A14224" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
-      <body className={`${inter.className} bg-brandBeige antialiased`}>{children}</body>
+      <body className={`${inter.className} bg-brandBeige antialiased`}>
+        {children}
+      </body>
     </html>
-  )
+  );
 }
