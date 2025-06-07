@@ -766,7 +766,6 @@ export default function SplitScroll({
                 : isDarkSection
                   ? "#FFFFFF"
                   : "#000000";
-
               return (
                 <div key={section.id} className="relative group">
                   <button
