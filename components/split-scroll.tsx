@@ -614,7 +614,6 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
