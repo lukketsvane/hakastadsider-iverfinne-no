@@ -131,7 +131,8 @@ const sections: SectionDefinition[] = [
     isDark: true,
     left: {
       type: "image",
-      content: "/images/orchard-visitors.jpeg",
+      content:
+        "https://cdn.builder.io/api/v1/image/assets%2F710ef2426b47492d85e479b0bfe5e2d6%2F2f46b68e69a24757bedbe3db5c8a9843",
       alt: "Besøkande i eplehagen",
       parallax: true,
     },
