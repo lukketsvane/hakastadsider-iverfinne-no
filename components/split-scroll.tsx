@@ -47,6 +47,18 @@ interface SplitScrollProps {
 const TRADISJON_LABEL_COLOR = "#A42F2A";
 const GRAVENSTEIN_LABEL_COLOR = "#B08D57";
 
+// Section names for navigation tooltips
+const sectionNames: Record<string, string> = {
+  heim: "Heim",
+  tradisjon: "Tradisjon",
+  garden: "Garden",
+  opplevingar: "Opplevingar",
+  "var-tradisjon-sider": "Tradisjon Sider",
+  "var-gravenstein-sider": "Gravenstein Sider",
+  "alle-produkta": "Alle Produkta",
+  kontakt: "Kontakt",
+};
+
 interface SectionContent {
   type: string;
   content?: any;
