@@ -625,7 +625,6 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
   const scrollToSection = useCallback(
     (index: number) => {
       if (isScrolling || index === activeSectionIndex) return;
-      setIsLoading(true);
       setIsScrolling(true);
       setTimeout(() => {
         const sectionElement = sectionRefs.current[index];
@@ -637,7 +636,6 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
           window.history.pushState(null, "", `#${sections[index].id}`);
         }
         setTimeout(() => {
-          setIsLoading(false);
           setIsScrolling(false);
         }, 1200);
       }, 300);
