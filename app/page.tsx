@@ -103,14 +103,14 @@ export default function Home() {
           {menuOpen ? (
             <X
               className={cn(
-                "h-[56px] w-[56px]",
+                "h-[64px] w-[64px]",
                 isDarkSection ? "text-white" : "text-black",
               )}
             />
           ) : (
             <Menu
               className={cn(
-                "h-[56px] w-[56px] flex flex-col justify-center items-center",
+                "h-[64px] w-[64px] flex flex-col justify-center items-center",
                 isDarkSection ? "text-white" : "text-black",
               )}
             />
