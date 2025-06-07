@@ -92,7 +92,7 @@ export default function Home() {
       <Button
         variant="ghost"
         className={cn(
-          "absolute right-6 top-6 z-50 h-20 w-20 rounded-full p-0 transition-all duration-[3000ms] hover:scale-105 hidden md:flex items-center justify-center bg-transparent hover:bg-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-opacity-50",
+          "absolute right-6 top-6 z-50 h-20 w-20 rounded-full p-0 transition-all duration-3000 hover:scale-105 hidden md:flex items-center justify-center bg-transparent hover:bg-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-opacity-50",
           shouldFadeMenu ? "opacity-0 pointer-events-none" : "opacity-100",
         )}
         onClick={toggleMenu}
