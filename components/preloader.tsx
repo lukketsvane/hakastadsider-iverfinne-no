@@ -1,29 +1,47 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import Image from "next/image"
+import { useEffect, useState } from "react";
+import Image from "next/image";
 
-export default function Preloader() {
-  const [progress, setProgress] = useState(0)
-  const [logoOpacity, setLogoOpacity] = useState(0.3)
+interface PreloaderProps {
+  onComplete?: () => void;
+}
+
+export default function Preloader({ onComplete }: PreloaderProps) {
+  const [progress, setProgress] = useState(0);
+  const [logoOpacity, setLogoOpacity] = useState(0.3);
 
   useEffect(() => {
+    let currentProgress = 0;
+    const totalDuration = 2500; // 2.5 seconds total
+    const intervalTime = 50; // Update every 50ms
+    const increment = 100 / (totalDuration / intervalTime); // Calculate increment to reach 100% in totalDuration
+
     const progressInterval = setInterval(() => {
-      setProgress((prevProgress) => {
-        const increment = Math.random() * 3 + 1
-        const newProgress = prevProgress + increment
+      currentProgress += increment;
 
-        // Update logo opacity based on progress
-        setLogoOpacity(0.3 + (newProgress / 100) * 0.7)
+      if (currentProgress >= 100) {
+        currentProgress = 100;
+        setProgress(100);
+        setLogoOpacity(1);
+        clearInterval(progressInterval);
 
-        return newProgress > 100 ? 100 : newProgress
-      })
-    }, 50)
+        // Call completion after a brief delay
+        setTimeout(() => {
+          if (onComplete) {
+            onComplete();
+          }
+        }, 300);
+      } else {
+        setProgress(currentProgress);
+        setLogoOpacity(0.3 + (currentProgress / 100) * 0.7);
+      }
+    }, intervalTime);
 
     return () => {
-      clearInterval(progressInterval)
-    }
-  }, [])
+      clearInterval(progressInterval);
+    };
+  }, [onComplete]);
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-[#f8f5f0] via-[#f5f1e8] to-[#f0ebe0]">
@@ -39,7 +57,18 @@ export default function Preloader() {
         />
       </div>
 
+      {/* Progress indicator */}
+      <div className="w-64 h-1 bg-black bg-opacity-10 rounded-full overflow-hidden">
+        <div
+          className="h-full bg-amber-600 transition-all duration-75 ease-out"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
 
+      {/* Progress text */}
+      <div className="mt-4 text-sm font-light text-gray-600">
+        {Math.round(progress)}%
+      </div>
     </div>
-  )
+  );
 }
