@@ -94,18 +94,18 @@ export default function Home() {
         aria-label={menuOpen ? "Lukk meny" : "Opne meny"}
         aria-expanded={menuOpen}
       >
-        <div className="relative">
+        <div className="relative flex flex-col justify-center items-center">
           {menuOpen ? (
             <X
               className={cn(
-                "h-10 w-10",
+                "h-11 w-11",
                 isDarkSection ? "text-white" : "text-black",
               )}
             />
           ) : (
             <Menu
               className={cn(
-                "h-10 w-10",
+                "h-11 w-11 flex flex-col justify-center items-center",
                 isDarkSection ? "text-white" : "text-black",
               )}
             />
