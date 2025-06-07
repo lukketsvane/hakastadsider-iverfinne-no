@@ -5,7 +5,7 @@ import {
   Inter,
   Spectral,
   Playfair_Display,
-  Source_Sans_Pro,
+  Source_Sans_3,
 } from "next/font/google";
 
 import "./globals.css";
