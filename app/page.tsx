@@ -21,6 +21,7 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const [activeLabelColor, setActiveLabelColor] = useState<string | null>(null);
   const [isDarkSection, setIsDarkSection] = useState(false);
+  const [activeSectionIndex, setActiveSectionIndex] = useState(0);
 
   useEffect(() => {
     const handleWindowScroll = () => {
@@ -44,6 +45,7 @@ export default function Home() {
   const handleSectionChange = (data: SectionChangeData) => {
     setActiveLabelColor(data.currentLabelColor);
     setIsDarkSection(data.isDarkSection);
+    setActiveSectionIndex(data.activeSectionIndex);
   };
 
   if (loading) {
@@ -57,8 +59,11 @@ export default function Home() {
       ? "#FFFFFF"
       : logoBaseColor;
 
+  // Determine if hamburger menu should be faded (after 2nd section = index 1)
+  const shouldFadeMenu = activeSectionIndex > 1;
+
   return (
-    <main className="relative h-screen w-full overflow-hidden bg-brandBeige">
+    <main className="relative h-screen w-full overflow-hidden bg-brandBeige font-haboro">
       <div
         className={cn(
           "absolute left-1/2 top-10 z-50 -translate-x-1/2 transform transition-all duration-500",
@@ -67,7 +72,7 @@ export default function Home() {
         )}
       >
         <div
-          className="h-[80px] w-[245px] transition-all duration-500 hover:opacity-80"
+          className="h-[57px] w-[245px] pb-[33px] transition-all duration-500 hover:opacity-80"
           style={{
             backgroundColor: logoColor,
             maskImage: "url(/images/ulvik-logo.svg)",
@@ -83,12 +88,12 @@ export default function Home() {
         />
       </div>
 
-      {/* Hamburger Menu Button - Updated Styling */}
+      {/* Hamburger Menu Button - Updated with larger size and fade animation */}
       <Button
         variant="ghost"
         className={cn(
-          "absolute right-6 top-6 z-50 h-20 w-20 rounded-full p-0 transition-all duration-300 hover:scale-105 hidden md:flex items-center justify-center bg-transparent hover:bg-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-opacity-50",
-          // Adjust padding/size for the icon itself if needed within the button
+          "absolute right-6 top-6 z-50 h-20 w-20 rounded-full p-0 transition-all duration-[3000ms] hover:scale-105 hidden md:flex items-center justify-center bg-transparent hover:bg-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-opacity-50",
+          shouldFadeMenu ? "opacity-0 pointer-events-none" : "opacity-100",
         )}
         onClick={toggleMenu}
         aria-label={menuOpen ? "Lukk meny" : "Opne meny"}
@@ -98,14 +103,14 @@ export default function Home() {
           {menuOpen ? (
             <X
               className={cn(
-                "h-11 w-11",
+                "h-[33px] w-[32px]",
                 isDarkSection ? "text-white" : "text-black",
               )}
             />
           ) : (
             <Menu
               className={cn(
-                "h-11 w-11 flex flex-col justify-center items-center",
+                "h-[33px] w-[32px] flex flex-col justify-center items-center",
                 isDarkSection ? "text-white" : "text-black",
               )}
             />
@@ -137,7 +142,7 @@ export default function Home() {
               <a
                 key={item}
                 href={`#${item.toLowerCase().replace(/\s+/g, "-").replace(/æ/g, "ae").replace(/ø/g, "o").replace(/å/g, "a")}`}
-                className="group relative text-lg font-light transition-all duration-300 hover:text-amber-700 hover:translate-x-1.5"
+                className="group relative text-lg font-light transition-all duration-300 hover:text-amber-700 hover:translate-x-1.5 font-haboro-contrast"
                 onClick={() => setMenuOpen(false)}
               >
                 <span className="relative z-10">
