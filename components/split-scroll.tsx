@@ -1,64 +1,73 @@
 // FILE: components/split-scroll.tsx
-"use client"
+"use client";
 
-import { useEffect, useRef, useState, useCallback } from "react"
-import Image from "next/image"
-import { Play, Pause, Volume2, VolumeX, ShoppingBag, Instagram, Facebook, MapPin } from "lucide-react"
+import { useEffect, useRef, useState, useCallback } from "react";
+import Image from "next/image";
+import {
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  ShoppingBag,
+  Instagram,
+  Facebook,
+  MapPin,
+} from "lucide-react";
 // Removed problematic import: import { AperitiffIcon, SkalldyrIcon, FiskIcon, FyldeIcon, FriskhetIcon, SodmeIcon, DrikkeIkon } from "@/components/icons"
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import MapWidget from "@/components/map-widget"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import MapWidget from "@/components/map-widget";
 
-import type { JSX } from "react"
+import type { JSX } from "react";
 
 // --- Placeholder Icon Components ---
 // Replace these with your actual icon components and correct import path
-const AperitiffIcon = () => <span className="mr-2">[AI]</span>
-const SkalldyrIcon = () => <span className="mr-2">[SI]</span>
-const FiskIcon = () => <span className="mr-2">[FI]</span>
-const FyldeIcon = () => <span className="mr-2">[FyI]</span>
-const FriskhetIcon = () => <span className="mr-2">[FrI]</span>
-const SodmeIcon = () => <span className="mr-2">[SoI]</span>
-const DrikkeIkon = () => <span className="mr-2">[DI]</span> // Used as a fallback and for LystKjøttIcon
+const AperitiffIcon = () => <span className="mr-2">[AI]</span>;
+const SkalldyrIcon = () => <span className="mr-2">[SI]</span>;
+const FiskIcon = () => <span className="mr-2">[FI]</span>;
+const FyldeIcon = () => <span className="mr-2">[FyI]</span>;
+const FriskhetIcon = () => <span className="mr-2">[FrI]</span>;
+const SodmeIcon = () => <span className="mr-2">[SoI]</span>;
+const DrikkeIkon = () => <span className="mr-2">[DI]</span>; // Used as a fallback and for LystKjøttIcon
 // --- End Placeholder Icon Components ---
 
 interface SectionChangeData {
-  activeSectionIndex: number
-  currentLabelColor: string | null
-  isDarkSection: boolean
+  activeSectionIndex: number;
+  currentLabelColor: string | null;
+  isDarkSection: boolean;
 }
 
 interface SplitScrollProps {
-  onSectionChange: (data: SectionChangeData) => void
+  onSectionChange: (data: SectionChangeData) => void;
 }
 
-const TRADISJON_LABEL_COLOR = "#A42F2A"
-const GRAVENSTEIN_LABEL_COLOR = "#B08D57"
+const TRADISJON_LABEL_COLOR = "#A42F2A";
+const GRAVENSTEIN_LABEL_COLOR = "#B08D57";
 
 interface SectionContent {
-  type: string
-  content?: any
-  alt?: string
-  parallax?: boolean
-  logoSrc?: string
-  subtitle?: string
-  description?: string
-  title?: string
-  cta?: string
-  animationDelay?: number
-  product?: any
-  items?: any[]
-  contact?: any
+  type: string;
+  content?: any;
+  alt?: string;
+  parallax?: boolean;
+  logoSrc?: string;
+  subtitle?: string;
+  description?: string;
+  title?: string;
+  cta?: string;
+  animationDelay?: number;
+  product?: any;
+  items?: any[];
+  contact?: any;
 }
 
 interface SectionDefinition {
-  id: string
-  isDark?: boolean
-  labelColor?: string
-  left: SectionContent
-  right: SectionContent
-  fullWidthComponent?: () => JSX.Element
+  id: string;
+  isDark?: boolean;
+  labelColor?: string;
+  left: SectionContent;
+  right: SectionContent;
+  fullWidthComponent?: () => JSX.Element;
 }
 
 const sections: SectionDefinition[] = [
@@ -100,7 +109,12 @@ const sections: SectionDefinition[] = [
   },
   {
     id: "garden",
-    left: { type: "image", content: "/images/farmer-portrait.jpeg", alt: "Gardbrukar blant epleblom", parallax: true },
+    left: {
+      type: "image",
+      content: "/images/farmer-portrait.jpeg",
+      alt: "Gardbrukar blant epleblom",
+      parallax: true,
+    },
     right: {
       type: "content",
       title: "Garden Hakastad",
@@ -114,7 +128,12 @@ const sections: SectionDefinition[] = [
   {
     id: "opplevingar",
     isDark: true,
-    left: { type: "image", content: "/images/orchard-visitors.jpeg", alt: "Besøkande i eplehagen", parallax: true },
+    left: {
+      type: "image",
+      content: "/images/orchard-visitors.jpeg",
+      alt: "Besøkande i eplehagen",
+      parallax: true,
+    },
     right: {
       type: "content",
       title: "Opplevingar",
@@ -164,7 +183,8 @@ const sections: SectionDefinition[] = [
         category: "SIDER",
         bottleImage: "/images/gravenstein-large.png",
         origin: "Noreg, Vestland, Hardanger",
-        description: "Fyldig, vinøs og god sødme. Svakt syrleg, lang ettersmak med smak av mandel.",
+        description:
+          "Fyldig, vinøs og god sødme. Svakt syrleg, lang ettersmak med smak av mandel.",
         availability: "Kan bestillast til alle butikkar",
         storeLinkText: "Vis butikkar med varen på lager",
         delivery: "Post/Levering: Kan bestillast",
@@ -224,7 +244,7 @@ const sections: SectionDefinition[] = [
           alt: "Svartsurbær",
           title: "Svartsurbær",
           description: "Lang ettersmak av eple.",
-          details: "8% alkohol • Under 3 g/l sukker",
+          details: "8% alkohol ��� Under 3 g/l sukker",
         },
         {
           type: "image",
@@ -265,39 +285,46 @@ const sections: SectionDefinition[] = [
       animationDelay: 0.6,
     },
   },
-]
+];
 
 const SingleProductShowcase = ({
   product,
   activeSection,
   sectionIndex,
   isDarkMode,
-}: { product: any; activeSection: number; sectionIndex: number; isDarkMode: boolean }) => {
-  const textColor = isDarkMode ? "text-gray-300" : "text-gray-700"
-  const headingColor = isDarkMode ? "text-white" : "text-black"
-  const subHeadingColor = isDarkMode ? "text-amber-400" : "text-amber-600"
-  const linkColor = isDarkMode ? "text-amber-300 hover:text-amber-200" : "text-amber-600 hover:text-amber-700"
+}: {
+  product: any;
+  activeSection: number;
+  sectionIndex: number;
+  isDarkMode: boolean;
+}) => {
+  const textColor = isDarkMode ? "text-gray-300" : "text-gray-700";
+  const headingColor = isDarkMode ? "text-white" : "text-black";
+  const subHeadingColor = isDarkMode ? "text-amber-400" : "text-amber-600";
+  const linkColor = isDarkMode
+    ? "text-amber-300 hover:text-amber-200"
+    : "text-amber-600 hover:text-amber-700";
 
   const renderIcon = (iconName: string | undefined) => {
     switch (iconName) {
       case "AperitiffIcon":
-        return <AperitiffIcon />
+        return <AperitiffIcon />;
       case "SkalldyrIcon":
-        return <SkalldyrIcon />
+        return <SkalldyrIcon />;
       case "FiskIcon":
-        return <FiskIcon />
+        return <FiskIcon />;
       case "LystKjøttIcon":
-        return <DrikkeIkon /> // Placeholder for LystKjøttIcon
+        return <DrikkeIkon />; // Placeholder for LystKjøttIcon
       case "FyldeIcon":
-        return <FyldeIcon />
+        return <FyldeIcon />;
       case "FriskhetIcon":
-        return <FriskhetIcon />
+        return <FriskhetIcon />;
       case "SodmeIcon":
-        return <SodmeIcon />
+        return <SodmeIcon />;
       default:
-        return <DrikkeIkon />
+        return <DrikkeIkon />;
     }
-  }
+  };
 
   return (
     <div
@@ -310,7 +337,10 @@ const SingleProductShowcase = ({
     >
       <div className="w-1/2 max-[768px]:w-full max-[768px]:h-1/2 flex items-center justify-center p-8 relative overflow-hidden">
         <Image
-          src={product.bottleImage || "/placeholder.svg?height=900&width=300&text=Bottle"}
+          src={
+            product.bottleImage ||
+            "/placeholder.svg?height=900&width=300&text=Bottle"
+          }
           alt={product.name}
           width={285}
           height={855}
@@ -323,64 +353,86 @@ const SingleProductShowcase = ({
         />
       </div>
       <div
-        className={cn("w-1/2 max-[768px]:w-full max-[768px]:h-auto flex items-center justify-center p-8 md:p-12", textColor)}
+        className={cn(
+          "w-1/2 max-[768px]:w-full max-[768px]:h-auto flex items-center justify-center p-8 md:p-12",
+          textColor,
+        )}
       >
         <div className="w-full max-w-md lg:max-w-lg xl:max-w-xl space-y-6">
-        <p className={`text-sm uppercase tracking-wider ${subHeadingColor}`}>{product.category}</p>
-        <h1 className={`text-3xl md:text-4xl font-light ${headingColor}`}>{product.name}</h1>
-        <p className={`text-xs ${textColor}`}>{product.origin}</p>
-        <p className="text-lg leading-relaxed">{product.description}</p>
+          <p className={`text-sm uppercase tracking-wider ${subHeadingColor}`}>
+            {product.category}
+          </p>
+          <h1 className={`text-3xl md:text-4xl font-light ${headingColor}`}>
+            {product.name}
+          </h1>
+          <p className={`text-xs ${textColor}`}>{product.origin}</p>
+          <p className="text-lg leading-relaxed">{product.description}</p>
 
-        <div className="space-y-2 text-sm mt-4">
-          <div className="flex items-center">
-            <MapPin size={16} className="mr-2" />
-            <span>
-              {product.availability}.{" "}
-              <a href="#" className={linkColor}>
-                {product.storeLinkText}
-              </a>
-            </span>
+          <div className="space-y-2 text-sm mt-4">
+            <div className="flex items-center">
+              <MapPin size={16} className="mr-2" />
+              <span>
+                {product.availability}.{" "}
+                <a href="#" className={linkColor}>
+                  {product.storeLinkText}
+                </a>
+              </span>
+            </div>
+            <div className="flex items-center">
+              <ShoppingBag size={16} className="mr-2" />
+              <span>{product.delivery}</span>
+            </div>
           </div>
-          <div className="flex items-center">
-            <ShoppingBag size={16} className="mr-2" />
-            <span>{product.delivery}</span>
-          </div>
-        </div>
-        <hr className={cn("my-6", isDarkMode ? "border-gray-700" : "border-gray-300")} />
+          <hr
+            className={cn(
+              "my-6",
+              isDarkMode ? "border-gray-700" : "border-gray-300",
+            )}
+          />
 
-        {product.foodPairingsAndTaste && product.foodPairingsAndTaste.length > 0 && (
-          <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
-            {product.foodPairingsAndTaste.map((item: any, idx: number) => (
-              <div key={idx} className="flex items-center">
-                {renderIcon(item.icon)} <span>{item.text}</span>
+          {product.foodPairingsAndTaste &&
+            product.foodPairingsAndTaste.length > 0 && (
+              <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
+                {product.foodPairingsAndTaste.map((item: any, idx: number) => (
+                  <div key={idx} className="flex items-center">
+                    {renderIcon(item.icon)} <span>{item.text}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        )}
+            )}
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-const VideoPlayer = ({ src, poster, alt }: { src: string; poster: string; alt: string }) => {
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [isMuted, setIsMuted] = useState(true)
-  const [showControls, setShowControls] = useState(false)
-  const videoRef = useRef<HTMLVideoElement>(null)
+const VideoPlayer = ({
+  src,
+  poster,
+  alt,
+}: {
+  src: string;
+  poster: string;
+  alt: string;
+}) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+  const [showControls, setShowControls] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const togglePlay = () => {
     if (videoRef.current) {
-      if (isPlaying) videoRef.current.pause()
-      else videoRef.current.play()
-      setIsPlaying(!isPlaying)
+      if (isPlaying) videoRef.current.pause();
+      else videoRef.current.play();
+      setIsPlaying(!isPlaying);
     }
-  }
+  };
   const toggleMute = () => {
     if (videoRef.current) {
-      videoRef.current.muted = !isMuted
-      setIsMuted(!isMuted)
+      videoRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
     }
-  }
+  };
 
   return (
     <div
@@ -388,7 +440,14 @@ const VideoPlayer = ({ src, poster, alt }: { src: string; poster: string; alt: s
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
-      <video ref={videoRef} className="h-full w-full object-cover" poster={poster} muted={isMuted} loop playsInline>
+      <video
+        ref={videoRef}
+        className="h-full w-full object-cover"
+        poster={poster}
+        muted={isMuted}
+        loop
+        playsInline
+      >
         <source src={src} type="video/mp4" />
       </video>
       <div
@@ -404,7 +463,11 @@ const VideoPlayer = ({ src, poster, alt }: { src: string; poster: string; alt: s
             className="h-16 w-16 rounded-full bg-white bg-opacity-80 text-amber-700 hover:bg-white hover:bg-opacity-100"
             onClick={togglePlay}
           >
-            {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8 pl-1" />}
+            {isPlaying ? (
+              <Pause className="h-8 w-8" />
+            ) : (
+              <Play className="h-8 w-8 pl-1" />
+            )}
           </Button>
           <Button
             variant="ghost"
@@ -412,13 +475,17 @@ const VideoPlayer = ({ src, poster, alt }: { src: string; poster: string; alt: s
             className="h-10 w-10 rounded-full bg-white bg-opacity-80 text-amber-700 hover:bg-white hover:bg-opacity-100"
             onClick={toggleMute}
           >
-            {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+            {isMuted ? (
+              <VolumeX className="h-5 w-5" />
+            ) : (
+              <Volume2 className="h-5 w-5" />
+            )}
           </Button>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const LogoContent = ({
   logoSrc,
@@ -430,21 +497,23 @@ const LogoContent = ({
   animationDelay,
   isDarkMode,
 }: {
-  logoSrc: string
-  subtitle: string
-  description: string
-  cta: string
-  activeSection: number
-  sectionIndex: number
-  animationDelay: number
-  isDarkMode: boolean
+  logoSrc: string;
+  subtitle: string;
+  description: string;
+  cta: string;
+  activeSection: number;
+  sectionIndex: number;
+  animationDelay: number;
+  isDarkMode: boolean;
 }) => {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center p-6 max-[375px]:p-4 text-left">
       <div
         className={cn(
           "transform transition-all duration-1200 ease-out",
-          activeSection === sectionIndex ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0",
+          activeSection === sectionIndex
+            ? "translate-y-0 opacity-100"
+            : "translate-y-12 opacity-0",
         )}
         style={{ transitionDelay: `${animationDelay * 1000}ms` }}
       >
@@ -481,14 +550,18 @@ const LogoContent = ({
         </Button>
       </div>
     </div>
-  )
-}
+  );
+};
 
 const ProductGrid = ({
   items,
   activeSection,
   sectionIndex,
-}: { items: any[]; activeSection: number; sectionIndex: number }) => {
+}: {
+  items: any[];
+  activeSection: number;
+  sectionIndex: number;
+}) => {
   return (
     <div className="h-full w-full p-8 overflow-y-auto">
       <div className="grid grid-cols-2 gap-6 max-h-full">
@@ -497,132 +570,157 @@ const ProductGrid = ({
             key={i}
             className={cn(
               "group relative flex flex-col items-center p-3 max-[375px]:p-2 bg-black bg-opacity-20 backdrop-blur-sm rounded-lg shadow-sm hover:shadow-md transition-all duration-500 border border-white border-opacity-10",
-              activeSection === sectionIndex ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0",
+              activeSection === sectionIndex
+                ? "translate-y-0 opacity-100"
+                : "translate-y-4 opacity-0",
             )}
             style={{ transitionDelay: `${i * 100}ms` }}
           >
             <div className="relative h-40 w-28 mb-3">
               <Image
-                src={item.content || "/placeholder.svg?height=160&width=112&text=Product"}
+                src={
+                  item.content ||
+                  "/placeholder.svg?height=160&width=112&text=Product"
+                }
                 alt={item.alt}
                 fill
                 className="object-contain transition-transform duration-300 group-hover:scale-105"
               />
             </div>
-            <h4 className="text-sm font-medium text-white mb-1 text-center">{item.title}</h4>
-            <p className="text-xs text-gray-300 mb-2 text-center leading-tight">{item.description}</p>
-            <p className="text-xs text-amber-400 font-medium mb-1">{item.details}</p>
-            {item.pairing && <p className="text-xs text-gray-400 text-center">{item.pairing}</p>}
+            <h4 className="text-sm font-medium text-white mb-1 text-center">
+              {item.title}
+            </h4>
+            <p className="text-xs text-gray-300 mb-2 text-center leading-tight">
+              {item.description}
+            </p>
+            <p className="text-xs text-amber-400 font-medium mb-1">
+              {item.details}
+            </p>
+            {item.pairing && (
+              <p className="text-xs text-gray-400 text-center">
+                {item.pairing}
+              </p>
+            )}
           </div>
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
-  const [activeSectionIndex, setActiveSectionIndex] = useState(0)
-  const [isScrolling, setIsScrolling] = useState(false)
-  const [scrollProgress, setScrollProgress] = useState(0)
-  const [isLoading, setIsLoading] = useState(false)
+  const [activeSectionIndex, setActiveSectionIndex] = useState(0);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const containerRef = useRef<HTMLDivElement>(null)
-  const sectionRefs = useRef<(HTMLDivElement | null)[]>([])
-  const parallaxRefs = useRef<(HTMLDivElement | null)[]>([])
+  const containerRef = useRef<HTMLDivElement>(null);
+  const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const parallaxRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const currentSectionData = sections[activeSectionIndex]
-  const isCurrentSectionDark = !!currentSectionData?.isDark
+  const currentSectionData = sections[activeSectionIndex];
+  const isCurrentSectionDark = !!currentSectionData?.isDark;
 
   const scrollToSection = useCallback(
     (index: number) => {
-      if (isScrolling || index === activeSectionIndex) return
-      setIsLoading(true)
-      setIsScrolling(true)
+      if (isScrolling || index === activeSectionIndex) return;
+      setIsLoading(true);
+      setIsScrolling(true);
       setTimeout(() => {
-        const sectionElement = sectionRefs.current[index]
+        const sectionElement = sectionRefs.current[index];
         if (sectionElement && containerRef.current) {
-          containerRef.current.scrollTo({ top: sectionElement.offsetTop, behavior: "smooth" })
-          window.history.pushState(null, "", `#${sections[index].id}`)
+          containerRef.current.scrollTo({
+            top: sectionElement.offsetTop,
+            behavior: "smooth",
+          });
+          window.history.pushState(null, "", `#${sections[index].id}`);
         }
         setTimeout(() => {
-          setIsLoading(false)
-          setIsScrolling(false)
-        }, 1200)
-      }, 300)
+          setIsLoading(false);
+          setIsScrolling(false);
+        }, 1200);
+      }, 300);
     },
     [activeSectionIndex, isScrolling],
-  )
+  );
 
   useEffect(() => {
-    const container = containerRef.current
-    if (!container) return
+    const container = containerRef.current;
+    if (!container) return;
     const handleScroll = () => {
-      if (!container) return
-      const scrollTop = container.scrollTop
-      const scrollHeight = container.scrollHeight - container.clientHeight
-      const progress = scrollHeight > 0 ? scrollTop / scrollHeight : 0
-      setScrollProgress(progress)
+      if (!container) return;
+      const scrollTop = container.scrollTop;
+      const scrollHeight = container.scrollHeight - container.clientHeight;
+      const progress = scrollHeight > 0 ? scrollTop / scrollHeight : 0;
+      setScrollProgress(progress);
 
       parallaxRefs.current.forEach((ref, parallaxElementIndex) => {
         if (ref) {
-          const sectionIndexForParallax = Math.floor(parallaxElementIndex / 2)
-          const currentSectionRef = sectionRefs.current[sectionIndexForParallax]
-          const sectionTop = currentSectionRef?.offsetTop || 0
-          const offset = (scrollTop - sectionTop) * 0.3
-          ref.style.transform = `translateY(${offset}px)`
+          const sectionIndexForParallax = Math.floor(parallaxElementIndex / 2);
+          const currentSectionRef =
+            sectionRefs.current[sectionIndexForParallax];
+          const sectionTop = currentSectionRef?.offsetTop || 0;
+          const offset = (scrollTop - sectionTop) * 0.3;
+          ref.style.transform = `translateY(${offset}px)`;
         }
-      })
+      });
 
-      if (isScrolling) return
-      const viewportHeight = window.innerHeight
-      let newActiveSection = activeSectionIndex
+      if (isScrolling) return;
+      const viewportHeight = window.innerHeight;
+      let newActiveSection = activeSectionIndex;
 
       for (let i = 0; i < sectionRefs.current.length; i++) {
-        const section = sectionRefs.current[i]
+        const section = sectionRefs.current[i];
         if (section) {
-          const sectionTop = section.offsetTop
-          const sectionHeight = section.offsetHeight
+          const sectionTop = section.offsetTop;
+          const sectionHeight = section.offsetHeight;
           if (
             scrollTop >= sectionTop - viewportHeight * 0.5 &&
             scrollTop < sectionTop + sectionHeight - viewportHeight * 0.5
           ) {
-            newActiveSection = i
-            break
+            newActiveSection = i;
+            break;
           }
           if (
             i === sectionRefs.current.length - 1 &&
             scrollTop + viewportHeight >= scrollHeight + viewportHeight - 10
           ) {
-            newActiveSection = i
+            newActiveSection = i;
           }
         }
       }
       if (newActiveSection !== activeSectionIndex) {
-        setActiveSectionIndex(newActiveSection)
-        if (!isScrolling) window.history.pushState(null, "", `#${sections[newActiveSection].id}`)
+        setActiveSectionIndex(newActiveSection);
+        if (!isScrolling)
+          window.history.pushState(
+            null,
+            "",
+            `#${sections[newActiveSection].id}`,
+          );
       }
-    }
+    };
 
-    container.addEventListener("scroll", handleScroll, { passive: true })
-    handleScroll()
-    const hash = window.location.hash.replace("#", "")
+    container.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    const hash = window.location.hash.replace("#", "");
     if (hash) {
-      const index = sections.findIndex((section) => section.id === hash)
-      if (index !== -1 && index !== activeSectionIndex) setTimeout(() => scrollToSection(index), 500)
+      const index = sections.findIndex((section) => section.id === hash);
+      if (index !== -1 && index !== activeSectionIndex)
+        setTimeout(() => scrollToSection(index), 500);
     }
-    return () => container.removeEventListener("scroll", handleScroll)
-  }, [activeSectionIndex, isScrolling, scrollToSection])
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, [activeSectionIndex, isScrolling, scrollToSection]);
 
   useEffect(() => {
-    const currentSection = sections[activeSectionIndex]
+    const currentSection = sections[activeSectionIndex];
     if (currentSection) {
       onSectionChange({
         activeSectionIndex: activeSectionIndex,
         currentLabelColor: currentSection.labelColor || null,
         isDarkSection: !!currentSection.isDark,
-      })
+      });
     }
-  }, [activeSectionIndex, onSectionChange])
+  }, [activeSectionIndex, onSectionChange]);
 
   return (
     <>
@@ -649,14 +747,14 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
         <div className="fixed left-4 md:left-6 top-1/2 z-30 -translate-y-1/2 transform">
           <div className="flex flex-col space-y-3">
             {sections.map((section, index) => {
-              const isActive = index === activeSectionIndex
-              const isPassed = index < activeSectionIndex
+              const isActive = index === activeSectionIndex;
+              const isPassed = index < activeSectionIndex;
 
-              let dotBgColor = "bg-gray-300 dark:bg-gray-600"
+              let dotBgColor = "bg-gray-300 dark:bg-gray-600";
               if (isActive) {
-                dotBgColor = "bg-amber-600"
+                dotBgColor = "bg-amber-600";
               } else if (isPassed) {
-                dotBgColor = "bg-amber-600 opacity-50"
+                dotBgColor = "bg-amber-600 opacity-50";
               }
 
               return (
@@ -668,10 +766,12 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
                     "h-2 w-2 rounded-full transition-all duration-300 ease-out",
                     "hover:scale-125",
                     dotBgColor,
-                    isActive ? "ring-1 ring-offset-1 ring-amber-500 dark:ring-amber-400" : "",
+                    isActive
+                      ? "ring-1 ring-offset-1 ring-amber-500 dark:ring-amber-400"
+                      : "",
                   )}
                 />
-              )
+              );
             })}
           </div>
         </div>
@@ -682,19 +782,23 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
               <div
                 key={section.id}
                 id={section.id}
-                ref={(el) => { sectionRefs.current[index] = el }}
+                ref={(el) => {
+                  sectionRefs.current[index] = el;
+                }}
                 className="h-auto min-h-screen w-full flex items-center justify-center"
                 style={{ scrollSnapAlign: "start" }}
               >
                 {section.fullWidthComponent()}
               </div>
-            )
+            );
           }
           return (
             <div
               key={section.id}
               id={section.id}
-              ref={(el) => { sectionRefs.current[index] = el }}
+              ref={(el) => {
+                sectionRefs.current[index] = el;
+              }}
               className={cn(
                 "flex h-screen w-full transition-all duration-1000 ease-in-out relative",
                 "max-[375px]:flex-col max-[375px]:h-auto max-[375px]:min-h-screen",
@@ -724,19 +828,24 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
                       <div
                         ref={(el) => {
                           if (section.left.parallax) {
-                            parallaxRefs.current[index * 2] = el
+                            parallaxRefs.current[index * 2] = el;
                           }
                         }}
                         className="relative h-full w-full will-change-transform"
                       >
                         <Image
-                          src={section.left.content || "/placeholder.svg?height=800&width=600&text=Image"}
+                          src={
+                            section.left.content ||
+                            "/placeholder.svg?height=800&width=600&text=Image"
+                          }
                           alt={section.left.alt || "Section image"}
                           fill
                           priority={index < 2}
                           className={cn(
                             "object-cover transition-transform duration-1000 ease-out",
-                            activeSectionIndex === index ? "scale-100" : "scale-105",
+                            activeSectionIndex === index
+                              ? "scale-100"
+                              : "scale-105",
                           )}
                         />
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-black/20 opacity-20" />
@@ -747,14 +856,20 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
                         <div
                           className={cn(
                             "transform transition-all duration-1000",
-                            activeSectionIndex === index ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0",
+                            activeSectionIndex === index
+                              ? "translate-y-0 opacity-100"
+                              : "translate-y-8 opacity-0",
                           )}
-                          style={{ transitionDelay: `${(section.left.animationDelay || 0) * 1000}ms` }}
+                          style={{
+                            transitionDelay: `${(section.left.animationDelay || 0) * 1000}ms`,
+                          }}
                         >
                           <h3
                             className={cn(
                               "mb-2 text-sm font-light uppercase tracking-widest animate-fadeIn transition-colors duration-500",
-                              section.isDark ? "text-amber-400" : "text-amber-700",
+                              section.isDark
+                                ? "text-amber-400"
+                                : "text-amber-700",
                             )}
                           >
                             {section.left.subtitle}
@@ -770,7 +885,9 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
                           <p
                             className={cn(
                               "mb-8 max-w-md animate-slideInUp transition-colors duration-500",
-                              section.isDark ? "text-gray-300" : "text-gray-600",
+                              section.isDark
+                                ? "text-gray-300"
+                                : "text-gray-600",
                             )}
                           >
                             {section.left.description}
@@ -798,24 +915,34 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
                     )}
                     {section.left.type === "map-widget" && <MapWidget />}
                   </div>
-                  <div className={cn("relative h-full w-1/2 overflow-hidden flex flex-col", "max-[375px]:w-full max-[375px]:h-1/2")}>
+                  <div
+                    className={cn(
+                      "relative h-full w-1/2 overflow-hidden flex flex-col",
+                      "max-[375px]:w-full max-[375px]:h-1/2",
+                    )}
+                  >
                     {section.right.type === "image" && (
                       <div
                         ref={(el) => {
                           if (section.right.parallax) {
-                            parallaxRefs.current[index * 2 + 1] = el
+                            parallaxRefs.current[index * 2 + 1] = el;
                           }
                         }}
                         className="relative h-full w-full will-change-transform"
                       >
                         <Image
-                          src={section.right.content || "/placeholder.svg?height=800&width=600&text=Image"}
+                          src={
+                            section.right.content ||
+                            "/placeholder.svg?height=800&width=600&text=Image"
+                          }
                           alt={section.right.alt || "Section image"}
                           fill
                           priority={index < 2}
                           className={cn(
                             "object-cover transition-transform duration-1000 ease-out",
-                            activeSectionIndex === index ? "scale-100" : "scale-105",
+                            activeSectionIndex === index
+                              ? "scale-100"
+                              : "scale-105",
                           )}
                         />
                         <div className="absolute inset-0 h-full bg-gradient-to-l from-transparent via-black/5 to-black/20 opacity-20" />
@@ -826,14 +953,20 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
                         <div
                           className={cn(
                             "transform transition-all duration-1000",
-                            activeSectionIndex === index ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0",
+                            activeSectionIndex === index
+                              ? "translate-y-0 opacity-100"
+                              : "translate-y-8 opacity-0",
                           )}
-                          style={{ transitionDelay: `${(section.right.animationDelay || 0) * 1000}ms` }}
+                          style={{
+                            transitionDelay: `${(section.right.animationDelay || 0) * 1000}ms`,
+                          }}
                         >
                           <h3
                             className={cn(
                               "mb-2 text-sm font-light uppercase tracking-widest animate-fadeIn transition-colors duration-500",
-                              section.isDark ? "text-amber-400" : "text-amber-700",
+                              section.isDark
+                                ? "text-amber-400"
+                                : "text-amber-700",
                             )}
                           >
                             {section.right.subtitle}
@@ -849,7 +982,9 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
                           <p
                             className={cn(
                               "mb-8 max-w-md animate-slideInUp transition-colors duration-500",
-                              section.isDark ? "text-gray-300" : "text-gray-600",
+                              section.isDark
+                                ? "text-gray-300"
+                                : "text-gray-600",
                             )}
                           >
                             {section.right.description}
@@ -858,10 +993,19 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
                             <div
                               className={cn(
                                 "mb-8 space-y-2 animate-slideInUp",
-                                section.isDark ? "text-gray-400" : "text-gray-600",
+                                section.isDark
+                                  ? "text-gray-400"
+                                  : "text-gray-600",
                               )}
                             >
-                              <p className={cn("font-medium", section.isDark ? "text-gray-200" : "text-gray-800")}>
+                              <p
+                                className={cn(
+                                  "font-medium",
+                                  section.isDark
+                                    ? "text-gray-200"
+                                    : "text-gray-800",
+                                )}
+                              >
                                 {section.right.contact.name}
                               </p>
                               <p className="transition-colors duration-300 hover:text-amber-700">
@@ -873,7 +1017,14 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
                               <p className="transition-colors duration-300 hover:text-amber-700">
                                 {section.right.contact.email}
                               </p>
-                              <p className={cn("text-sm", section.isDark ? "text-gray-500" : "text-gray-500")}>
+                              <p
+                                className={cn(
+                                  "text-sm",
+                                  section.isDark
+                                    ? "text-gray-500"
+                                    : "text-gray-500",
+                                )}
+                              >
                                 {section.right.contact.org}
                               </p>
                             </div>
@@ -895,18 +1046,18 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
                       </div>
                     )}
                     {section.right.type === "logo-content" && (
-                       <div className="flex h-full w-full flex-col items-center justify-center p-6 max-[375px]:p-4 text-left flex-grow">
-                          <LogoContent
-                            logoSrc={section.right.logoSrc || ""}
-                            subtitle={section.right.subtitle || ""}
-                            description={section.right.description || ""}
-                            cta={section.right.cta || ""}
-                            activeSection={activeSectionIndex}
-                            sectionIndex={index}
-                            animationDelay={section.right.animationDelay || 0}
-                            isDarkMode={!!section.isDark}
-                          />
-                        </div>
+                      <div className="flex h-full w-full flex-col items-center justify-center p-6 max-[375px]:p-4 text-left flex-grow">
+                        <LogoContent
+                          logoSrc={section.right.logoSrc || ""}
+                          subtitle={section.right.subtitle || ""}
+                          description={section.right.description || ""}
+                          cta={section.right.cta || ""}
+                          activeSection={activeSectionIndex}
+                          sectionIndex={index}
+                          animationDelay={section.right.animationDelay || 0}
+                          isDarkMode={!!section.isDark}
+                        />
+                      </div>
                     )}
                     {section.id === "kontakt" && (
                       <div className="mt-auto pb-8 md:pb-12 flex justify-center space-x-6 animate-fadeIn">
@@ -917,7 +1068,9 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
                           aria-label="Ulvik Frukt & Cideri Instagram"
                           className={cn(
                             "transition-colors",
-                            section.isDark ? "text-gray-400 hover:text-amber-400" : "text-gray-600 hover:text-amber-700",
+                            section.isDark
+                              ? "text-gray-400 hover:text-amber-400"
+                              : "text-gray-600 hover:text-amber-700",
                           )}
                         >
                           <Instagram size={28} />
@@ -927,9 +1080,11 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label="Ulvik Frukt & Cideri Facebook"
-                           className={cn(
+                          className={cn(
                             "transition-colors",
-                            section.isDark ? "text-gray-400 hover:text-amber-400" : "text-gray-600 hover:text-amber-700",
+                            section.isDark
+                              ? "text-gray-400 hover:text-amber-400"
+                              : "text-gray-600 hover:text-amber-700",
                           )}
                         >
                           <Facebook size={28} />
@@ -940,9 +1095,9 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
                 </>
               )}
             </div>
-          )
+          );
         })}
       </div>
     </>
-  )
+  );
 }
