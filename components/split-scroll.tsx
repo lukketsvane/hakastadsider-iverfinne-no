@@ -794,7 +794,9 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
             <div
               key={section.id}
               id={section.id}
-              ref={(el) => (sectionRefs.current[index] = el)}
+              ref={(el) => {
+                sectionRefs.current[index] = el;
+              }}
               className={cn(
                 "flex h-screen w-full transition-all duration-1000 ease-in-out relative",
                 "max-[375px]:flex-col max-[375px]:h-auto max-[375px]:min-h-screen",
