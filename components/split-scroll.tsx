@@ -624,7 +624,11 @@ const ProductGrid = ({
   );
 };
 
-export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
+export default function SplitScroll({
+  onSectionChange,
+  activeLabelColor,
+  isDarkSection,
+}: SplitScrollProps) {
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
