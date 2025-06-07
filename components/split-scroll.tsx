@@ -244,7 +244,7 @@ const sections: SectionDefinition[] = [
           alt: "Svartsurbær",
           title: "Svartsurbær",
           description: "Lang ettersmak av eple.",
-          details: "8% alkohol ��� Under 3 g/l sukker",
+          details: "8% alkohol • Under 3 g/l sukker",
         },
         {
           type: "image",
@@ -748,14 +748,6 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
           <div className="flex flex-col space-y-3">
             {sections.map((section, index) => {
               const isActive = index === activeSectionIndex;
-              const isPassed = index < activeSectionIndex;
-
-              let dotBgColor = "bg-gray-300 dark:bg-gray-600";
-              if (isActive) {
-                dotBgColor = "bg-amber-600";
-              } else if (isPassed) {
-                dotBgColor = "bg-amber-600 opacity-50";
-              }
 
               return (
                 <button
@@ -763,12 +755,9 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
                   onClick={() => scrollToSection(index)}
                   aria-label={`Gå til seksjon ${section.id.replace(/-/g, " ")}`}
                   className={cn(
-                    "h-2 w-2 rounded-full transition-all duration-300 ease-out",
-                    "hover:scale-125",
-                    dotBgColor,
-                    isActive
-                      ? "ring-1 ring-offset-1 ring-amber-500 dark:ring-amber-400"
-                      : "",
+                    "h-2 w-2 rounded-full transition-all duration-300",
+                    isActive ? "bg-black" : "bg-gray-400",
+                    "hover:bg-black",
                   )}
                 />
               );
