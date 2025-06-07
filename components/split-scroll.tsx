@@ -739,6 +739,7 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
           <div className="flex flex-col space-y-3">
             {sections.map((section, index) => {
               const isActive = index === activeSectionIndex;
+              const isPassed = index <= activeSectionIndex;
 
               return (
                 <button
@@ -746,8 +747,8 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
                   onClick={() => scrollToSection(index)}
                   aria-label={`Gå til seksjon ${section.id.replace(/-/g, " ")}`}
                   className={cn(
-                    "h-2 w-2 rounded-full transition-all duration-300",
-                    isActive ? "bg-black" : "bg-gray-400",
+                    "h-3 w-3 rounded-full transition-all duration-300 border-2 border-black",
+                    isPassed ? "bg-black" : "bg-transparent",
                     "hover:bg-black",
                   )}
                 />
