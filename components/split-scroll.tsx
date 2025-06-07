@@ -780,7 +780,9 @@ export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
               <div
                 key={section.id}
                 id={section.id}
-                ref={(el) => (sectionRefs.current[index] = el)}
+                ref={(el) => {
+                  sectionRefs.current[index] = el;
+                }}
                 className="h-auto min-h-screen w-full flex items-center justify-center"
                 style={{ scrollSnapAlign: "start" }}
               >
