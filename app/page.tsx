@@ -47,7 +47,7 @@ export default function Home() {
   };
 
   if (loading) {
-    return <Preloader />;
+    return <Preloader onComplete={handlePreloaderComplete} />;
   }
 
   const logoBaseColor = "#000000";
