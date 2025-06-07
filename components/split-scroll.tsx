@@ -1,198 +1,1097 @@
 // FILE: components/split-scroll.tsx
-"use client"
+"use client";
 
-import { useEffect, useRef, useState, useCallback } from "react"
-import Image from "next/image"
-import { Play, Pause, Volume2, VolumeX, ShoppingBag, Instagram, Facebook, MapPin } from "lucide-react"
+import { useEffect, useRef, useState, useCallback } from "react";
+import Image from "next/image";
+import {
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  ShoppingBag,
+  Instagram,
+  Facebook,
+  MapPin,
+} from "lucide-react";
+// Removed problematic import: import { AperitiffIcon, SkalldyrIcon, FiskIcon, FyldeIcon, FriskhetIcon, SodmeIcon, DrikkeIkon } from "@/components/icons"
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import MapWidget from "@/components/map-widget"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import MapWidget from "@/components/map-widget";
 
-import type { JSX } from "react"
+import type { JSX } from "react";
 
-const AperitiffIcon = () => <span className="mr-2 text-sm">[Ap]</span>
-const SkalldyrIcon = () => <span className="mr-2 text-sm">[Sk]</span>
-const FiskIcon = () => <span className="mr-2 text-sm">[Fi]</span>
-const FyldeIcon = () => <span className="mr-2 text-sm">[Fy]</span>
-const FriskhetIcon = () => <span className="mr-2 text-sm">[Fr]</span>
-const SodmeIcon = () => <span className="mr-2 text-sm">[Sø]</span>
-const DrikkeIkon = () => <span className="mr-2 text-sm">[Dr]</span>
+// --- Placeholder Icon Components ---
+// Replace these with your actual icon components and correct import path
+const AperitiffIcon = () => <span className="mr-2">[AI]</span>;
+const SkalldyrIcon = () => <span className="mr-2">[SI]</span>;
+const FiskIcon = () => <span className="mr-2">[FI]</span>;
+const FyldeIcon = () => <span className="mr-2">[FyI]</span>;
+const FriskhetIcon = () => <span className="mr-2">[FrI]</span>;
+const SodmeIcon = () => <span className="mr-2">[SoI]</span>;
+const DrikkeIkon = () => <span className="mr-2">[DI]</span>; // Used as a fallback and for LystKjøttIcon
+// --- End Placeholder Icon Components ---
 
 interface SectionChangeData {
-  activeSectionIndex: number
-  currentLabelColor: string | null
-  isDarkSection: boolean
+  activeSectionIndex: number;
+  currentLabelColor: string | null;
+  isDarkSection: boolean;
 }
 
 interface SplitScrollProps {
-  onSectionChange: (data: SectionChangeData) => void
+  onSectionChange: (data: SectionChangeData) => void;
 }
 
-const TRADISJON_LABEL_COLOR = "#A14224"
-const GRAVENSTEIN_LABEL_COLOR = "#B08D57"
-
-interface SectionContentItem {
-  src: string;
-  alt: string;
-  title?: string;
-  description?: string;
-  details?: string;
-  pairing?: string;
-}
-
-interface SectionContentProduct {
-  name: string;
-  category: string;
-  bottleImage: string;
-  origin: string;
-  description: string;
-  foodPairingsAndTaste: { icon: string; text: string }[];
-  vinmonopoletLink?: string;
-}
+const TRADISJON_LABEL_COLOR = "#A42F2A";
+const GRAVENSTEIN_LABEL_COLOR = "#B08D57";
 
 interface SectionContent {
-  type: string
-  content?: any
-  alt?: string
-  parallax?: boolean
-  logoSrc?: string
-  subtitle?: string
-  description?: string | JSX.Element
-  title?: string
-  cta?: string
-  animationDelay?: number
-  product?: SectionContentProduct
-  items?: SectionContentItem[]
-  contact?: any
+  type: string;
+  content?: any;
+  alt?: string;
+  parallax?: boolean;
+  logoSrc?: string;
+  subtitle?: string;
+  description?: string;
+  title?: string;
+  cta?: string;
+  animationDelay?: number;
+  product?: any;
+  items?: any[];
+  contact?: any;
 }
 
 interface SectionDefinition {
-  id: string
-  name: string;
-  isDark?: boolean
-  labelColor?: string
-  customBgClass?: string;
-  left: SectionContent
-  right: SectionContent
-  fullWidthComponent?: () => JSX.Element
+  id: string;
+  isDark?: boolean;
+  labelColor?: string;
+  left: SectionContent;
+  right: SectionContent;
+  fullWidthComponent?: () => JSX.Element;
 }
 
 const sections: SectionDefinition[] = [
-  { id: "heim", name: "Heim", left: { type: "image", content: "/images/hardanger-landscape.png", alt: "Hardanger med epleblom og fjord", parallax: true }, right: { type: "logo-content", logoSrc: "/images/logo-type-dark.svg", subtitle: "Sider frå Hardanger", description: "Ulvik Frukt & Cideri er ei familiebedrift på garden Hakastad. Garden ligg sørvendt og solrikt midt i fruktbygda Ulvik i Hardanger. Målet vårt er å utvikla ei bedrift som er tufta på kvalitet, kultur og kompetanse.", cta: "Les meir om oss", animationDelay: 0.2 }, },
-  { id: "tradisjon", name: "Tradisjon", left: { type: "content", title: "Vår Tradisjon", subtitle: "Generasjonar med handverk", description: "I over 200 år har familiar i Hardanger dyrka eple og laga sider. Me held fram denne stolte tradisjonen med respekt for naturen og dei gamle metodane, samstundes som me nyttar moderne teknikkar for å sikra høgste kvalitet.", cta: "Opplev tradisjonen", animationDelay: 0.3 }, right: { type: "image", content: "/images/bee-on-apple-blossom.png", alt: "Bie på epleblom", parallax: true }, },
-  { id: "garden", name: "Garden", left: { type: "image", content: "/images/farmer-portrait.jpeg", alt: "Gardbrukar blant epleblom", parallax: true }, right: { type: "content", title: "Garden Hakastad", subtitle: "Tradisjon og kvalitet", description: ( <> <p className="mb-6">Me dyrkar dei vanlege eplesortane som Gravenstein, Discovery, Aroma og James Grieve. Garden ligg sørvendt og solrikt, noko som gjev optimale vilkår for epleproduksjon i det unike klimaet i Hardanger.</p> <h4 className="text-xl md:text-2xl font-spectral font-medium mb-3 mt-8">Våre Eplesortar</h4> <div className="space-y-3 text-sm md:text-base"> <p>Me dyrkar mange sortar eple og grovt kan me gruppera dei i 3 grupper: vanlege sortar i konsumsal i dag, gamle eplesortar og spesielle franske/engelske sidersortar. Totalt har me over 20 eplesortar på garden. 2/3 av garden er nyplanta etter 2002 og det planta om lag 27 da.</p> <ul className="list-disc list-outside space-y-1 pl-5"> <li><strong>"Vanlege" sortar:</strong> Idunn, Raud Prins, Kronprins, Discovery, Raud Gravenstein, Summerred, Raud Aroma og Karin Schneider.</li> <li><strong>"Gamle" sortar:</strong> Franskar, James Grieve, Gul Gravenstein, Lord Lambourne, Signe Tillish, Raud Torstein, Ripston, Tormodseple, Bramley Seedling og Grønt sureplatre.</li> <li><strong>Engelske/franske "Sidersortar":</strong> Ellis Bitter, Cidor, Broxwood Foxwhelp og Somerset Redstreak.</li> </ul> <p>Meir opplysningar om eplesortane finn ein på: <a href="http://www.skogoglandskap.no/seksjoner/sortsdatabase/hent_fruktsort" target="_blank" rel="noopener noreferrer" className="text-amber-700 hover:underline">www.skogoglandskap.no</a></p> <p>På bilete haustar Annlaug ein godt utvikla Karin Schneider.</p> </div> </> ), animationDelay: 0.3 }, },
-  { id: "opplevingar", name: "Opplevingar", isDark: true, customBgClass: "bg-brandAccentRed", left: { type: "image", content: "/images/orchard-visitors.jpeg", alt: "Besøkande i eplehagen", parallax: true }, right: { type: "content", title: "Opplevingar", subtitle: "Smak og opplev", description: ( <> <p className="mb-6">Kom og opplev Hardanger og smak på våre eksepsjonelle sider og eplemost. Me tilbyr omvising på garden og sidersmak i dei vakre omgjevnadene i Hardanger. Opplev tradisjonen og handverket bak kvar flaske.</p> <h4 className="text-xl md:text-2xl font-spectral font-medium mb-3 mt-8 text-white">Omvising og Smaking</h4> <div className="space-y-3 text-sm md:text-base text-gray-200"> <p>Me har omvising - maks 40 - 50 personar - i produksjonslokale for sider og eplemost med smaksprøvar av dei ulike sortane saman med historie om garden og korleis produksjonen føregår. Etterpå får gjestene smaka dei ulike sidertypane me har i den nye skjenkestova me har over produksjonslokale. Me har og salsløyve for all sider med alkohol direkte frå gardsutsalet.</p> <p>Heile runden m smaking tek om lag 1 time og me tek imot grupper over 10 personar etter førehandstinging.</p> <p>I samband med Frukt- og siderruta Lekve-Syse-Hakastad har me siderslepp laurdagen rundt 20 mai og fruktslepp første helga i oktober. Bilete er frå det første sidersleppet vårt i 2010.</p> </div> </> ), cta: "Bestill omvising", animationDelay: 0.4 }, },
-  { id: "var-tradisjon-sider", name: "Tradisjon Sider", isDark: true, labelColor: TRADISJON_LABEL_COLOR, left: { type: "single-product-showcase", product: { name: "Ulvik Frukt & Cideri Sider Frå Hardanger Tradisjon", category: "SIDER", bottleImage: "/images/tradisjon-large.png", origin: "Noreg, Vestland, Hardanger", description: "Saftig med god friskheit, fokusert preg av mogne eple, hint av grøne urter og krydder. Mjuk brus.", foodPairingsAndTaste: [ { icon: "AperitiffIcon", text: "APERITIFF" }, { icon: "SkalldyrIcon", text: "SKALLDYR" }, { icon: "FiskIcon", text: "FISK" }, { icon: "FyldeIcon", text: "FYLDE" }, { icon: "FriskhetIcon", text: "FRISKHEIT" }, { icon: "SodmeIcon", text: "SØDME" }, ], vinmonopoletLink: "https://www.vinmonopolet.no/Land/Norge/Vestland/Hardanger/Ulvik-Frukt-%26-Cideri-Sider-Fr%C3%A5-Hardanger-Tradisjon/p/2025001", }, }, right: { type: "empty-pane-for-single-product" }, },
-  { id: "var-gravenstein-sider", name: "Gravenstein Sider", isDark: true, labelColor: GRAVENSTEIN_LABEL_COLOR, left: { type: "single-product-showcase", product: { name: "Ulvik Sider frå Hardanger Gravenstein", category: "SIDER", bottleImage: "/images/gravenstein-large.png", origin: "Noreg, Vestland, Hardanger", description: "Fyldig, vinøs og god sødme. Svakt syrleg, lang ettersmak med smak av mandel.", foodPairingsAndTaste: [ { icon: "AperitiffIcon", text: "APERITIFF" }, { icon: "FiskIcon", text: "FISK" }, { icon: "LystKjøttIcon", text: "LYST KJØT" }, { icon: "FyldeIcon", text: "FYLDE" }, { icon: "FriskhetIcon", text: "FRISKHEIT" }, { icon: "SodmeIcon", text: "SØDME" }, ], vinmonopoletLink: "https://www.vinmonopolet.no/search?q=ulvik%20gravenstein&searchType=product", }, }, right: { type: "empty-pane-for-single-product" }, },
-  { id: "alle-produkta", name: "Alle Produkta", isDark: true, left: { type: "product-grid", items: [ { src: "/images/gravenstein-large.png", alt: "Gravenstein Sider", title: "Gravenstein", description: "Fyldig, vinøs og god sødme.", details: "8% alkohol • 9 g/l sukker" }, { src: "/images/tradisjon-large.png", alt: "Tradisjon Sider", title: "Tradisjon", description: "Saftig med god friskheit.", details: "8% alkohol • 13,2 g/l sukker" }, { src: "/images/stille-stunder.png", alt: "Stille Stunder", title: "Stille Stunder", description: "Konsentrert eple.", details: "8% alkohol • Under 3 g/l sukker" }, { src: "/images/hylleblomsider.png", alt: "Hylleblomsider", title: "Hylleblomsider", description: "Søtleg med god syrebalanse.", details: "7,5% alkohol • 36 g/l sukker" }, { src: "/images/svartsurbaer.png", alt: "Svartsurbær", title: "Svartsurbær", description: "Lang ettersmak av eple.", details: "8% alkohol • Under 3 g/l sukker" }, { src: "/images/cider-bottles-outdoor.png", alt: "Sider utandørs", title: "Eplemost", description: "Naturleg eplemost.", details: "Alkoholfri • Naturleg søt" }, ] }, right: { type: "content", title: "Heile Kolleksjonen", subtitle: "Seks unike sider", description: "Opplev heile spekteret av våre handverksider. Frå den klassiske Gravenstein til den innovative Svartsurbær - kvar flaske fortel si eiga historie om Hardanger sitt terroir og vår lidenskap for kvalitet.", animationDelay: 0.6 }, },
-  { id: "eplemast-info", name: "Eplemost", isDark: false, left: { type: "image", content: "/images/generic-farm-product.jpg", alt: "Eplemost frå Hakastad", parallax: true }, right: { type: "content", title: "Eplemost frå Hakastad", subtitle: "Naturprodukt av eple", description: (<div className="space-y-4 text-sm md:text-base"> <p>Eplemost frå Hakastad - Ulvik Frukt & Cideri - er eit naturprodukt av eple - pressa eine dagen og pastuerisert andre dagen utan tilsetjingstoff. Smaken av flytande eple er gjennomgåande.</p> <p>Her kan ein få ulike smaksopplevingar alt etter kva ein er ute etter. Kvar eplesort har sin eigen smak etter kva sukker-, syre- og ev. tannininnhald den har - dette gjer at du på Hakastad kan få oppleva mange smakar etter kva du er ute etter. Bruken av eplemost kan difor vera ein god erstatning for vin/ev. brus til ulike matrettar etter den om den er fyldig, aromatisk, syrleg eller søt. Hovudkunden til Ulvik Frukt & Cideri - Bellevue restaurantar i Bergen - har erstatta brus med juice i alle selskap.</p> <p>Me produserar eplemost i 0,33l og 0,7l glasflasker. Elles og i 3l og 5l bag in box.</p> <p className="font-semibold mt-2">Desse sortane vert det laga eplemost av (nokre av sortane er produsert i mindre omfang) - rangert etter modningstid:</p> <ul className="list-disc list-outside space-y-1 pl-5"> <li><strong>IDUNN/FRANSKAR:</strong> er ein ny norsk sort som er saftig og fruktig. Franskar er ein av dei eldste sortane i Hardanger - er eit "mateple" og har mykje bitter og tanninstoff i seg. Båe modnar samstundes og i garden si spesialblanding vert det ein eplemost som er syrleg, stilrein og har ein lang ettersmak. Svært god til mange matrettar. Ein vinnar. Mange unge tre på gang - aukande produksjon.</li> <li><strong>DISCOVERY:</strong> ein engelsk sort som er svært aromatisk og har svært god sødme. Ein skikkeleg dessertmost som eignar seg som kosedrikk el til dessertar og kaker.</li> <li><strong>GRAVENSTEIN:</strong> er fyldig, vinøs og har god sødme. Den er svakt syrleg, svært karakteristisk aroma med lang ettersmak. Me seier at Gravenstein har en eigen ”Gravensteinaroma” med en smak av mandel. Gravenstein har eit stort bruksspekter og går godt både til kjøt og fisk. Eplesorten kom frå Danmark (Gråsten slott) til Hardanger i 1792 og vart hovudsort på 1900 talet i Hardanger og Norge.</li> <li><strong>JAMES GRIEVE:</strong> gjev ein svært rik og syrleg smak. Den er vinøs og har lang ettersmak. Det breie smaksregisteret gjer at den passar godt til fisk og skaldyr, likeeins kraftig og krydra mat. Eplesorten kom frå Skottland i 1890. Dyrka ein del i Norge midt på 1900 talet. Svært god som alkoholfri velkomstdrikk.</li> <li><strong>AROMA:</strong> "bankersen" - ein som ikkje har fått eplemost før likar alltid denne. Smaken er middels fyldig og aromatisk, med litt syrleg ettersmak. Har god balanse mellom syre/sødme. Den kan brukast både til kjøt- og fiskerettar. Eplesorten kom fra Sverige i 1970 – hovedsort i dag, og er en krysning mellom Ingrid Marie og Filippa.</li> <li><strong>KARIN SCHNEIDER:</strong> Den eplemosten som har minst syre av dei nemnde her. Den er lett å drikka og smakar litt søtt, men har ein syrleg ettersmak. Passar godt til litt lettere mat, td småretter og lunsj. Dei fleste ungane likar denne juicen særs godt. Sorten er dansk.</li> </ul> <p className="mt-2">Meir om eplesortane finn du på: <a href="http://www.skogoglandskap.no/seksjoner/sortsdatabase/hent_fruktsort" target="_blank" rel="noopener noreferrer" className="text-amber-700 hover:underline">www.skogoglandskap.no</a></p> </div>) }, },
-  { id: "sider-info", name: "Sider", isDark: false, left: { type: "image", content: "/images/generic-farm-product.jpg", alt: "Sider frå Hardanger", parallax: true }, right: { type: "content", title: "Sider frå Hardanger", subtitle: "Handverk og tradisjon", description: (<div className="space-y-4 text-sm md:text-base"> <p>Ulvik Frukt & Cideri fekk i juli 2009 statleg tilverknadsløyve for produksjon av alkoholhaldig drikk (vinstyrke). Med det løyve kan me selja sider til hotell, restaurantar og serveringsstader med skjenkeløyve. Frå juli 2011 er vi på tilleggsutvalet på Vinmonopolet.</p> <p>Med over 30 års erfaring som hobbysiderprodusent var det spennande å gå på ein større produksjon - men at sjølve handverket ligg i botnen av alt me gjer.</p> <p>Hakastadsider baserar seg på eple dyrka frå garden og er laga etter retningslinjene om "Sider frå Hardanger" slik at den kan bruka godkjenningsmerke (geografisk opphavsmerking) frå Matmerk. Sjå <a href="http://www.beskyttedebetegnelser.no/godkjente-produkter/bb/14/" target="_blank" rel="noopener noreferrer" className="text-amber-700 hover:underline">Matmerk Beskyttede Betegnelser</a>.</p> <p>Me ynskjer å laga ein sider rundt 6 - 7% slik at den får fram mykje av eplesmaken - sideren er laga heilt naturell utan tilsetjing av vingjær - berre litt sukker.</p> <p>For tida lagar vi to typar sider - ein rein Gravensteinsider basert på Gul Gravenstein og ein sider kalla Tradisjon som er garden si blanding.</p> <p>Sider er eit godt alternativ i staden for kvitvin til mat (fisk, kreps, blåskjel, asiatisk mat). Lokalt er sider, flatbrød og spekemat ein slager - alt produsert i Hardanger.</p> </div>) }, },
-  // Inspirasjon section removed
-  { id: "kontakt", name: "Kontakt", isDark: false, left: { type: "map-widget" }, right: { type: "content", title: "Velkomen til Hakastad", description: "Me tek gjerne imot besøk på garden. Opplev den vakre naturen i Hardanger og smak på våre handverksprodukt. Kontakt oss for omvising eller for å bestilla produkta våre.", contact: { name: "Asbjørn Børsheim", address: "Apalvegen 78, 5730 Ulvik", phone: "+47 91 10 22 15", email: "asbjorn.borsheim@ulvik.org", org: "Org. 983 035 256" }, cta: "Send melding", animationDelay: 0.6 }, },
-]
+  {
+    id: "heim",
+    left: {
+      type: "image",
+      content: "/images/hardanger-landscape.png",
+      alt: "Hardanger med epleblom og fjord",
+      parallax: true,
+    },
+    right: {
+      type: "logo-content",
+      logoSrc: "/images/logo-type-dark.svg",
+      subtitle: "Sider frå Hardanger",
+      description:
+        "Ulvik Frukt & Cideri er ei familiebedrift på garden Hakastad. Garden ligg sørvendt og solrikt midt i fruktbygda Ulvik i Hardanger. Målet vårt er å utvikla ei bedrift som er tufta på kvalitet, kultur og kompetanse.",
+      cta: "Les meir om oss",
+      animationDelay: 0.2,
+    },
+  },
+  {
+    id: "tradisjon",
+    left: {
+      type: "content",
+      title: "Vår Tradisjon",
+      subtitle: "Generasjonar med handverk",
+      description:
+        "I over 200 år har familiar i Hardanger dyrka eple og laga sider. Me held fram denne stolte tradisjonen med respekt for naturen og dei gamle metodane, samstundes som me nyttar moderne teknikkar for å sikra høgste kvalitet.",
+      cta: "Opplev tradisjonen",
+      animationDelay: 0.3,
+    },
+    right: {
+      type: "image",
+      content: "/images/bee-on-apple-blossom.png",
+      alt: "Bie på epleblom",
+      parallax: true,
+    },
+  },
+  {
+    id: "garden",
+    left: {
+      type: "image",
+      content: "/images/farmer-portrait.jpeg",
+      alt: "Gardbrukar blant epleblom",
+      parallax: true,
+    },
+    right: {
+      type: "content",
+      title: "Garden Hakastad",
+      subtitle: "Tradisjon og kvalitet",
+      description:
+        "Me dyrkar dei vanlege eplesortane som Gravenstein, Discovery, Aroma og James Grieve. Garden ligg sørvendt og solrikt, noko som gjev optimale vilkår for epleproduksjon i det unike klimaet i Hardanger.",
+      cta: "Sjå eplesortane",
+      animationDelay: 0.3,
+    },
+  },
+  {
+    id: "opplevingar",
+    isDark: true,
+    left: {
+      type: "image",
+      content: "/images/orchard-visitors.jpeg",
+      alt: "Besøkande i eplehagen",
+      parallax: true,
+    },
+    right: {
+      type: "content",
+      title: "Opplevingar",
+      subtitle: "Smak og opplev",
+      description:
+        "Kom og opplev Hardanger og smak på våre eksepsjonelle sider og eplemost. Me tilbyr omvising på garden og sidersmak i dei vakre omgjevnadene i Hardanger. Opplev tradisjonen og handverket bak kvar flaske.",
+      cta: "Bestill omvising",
+      animationDelay: 0.4,
+    },
+  },
+  {
+    id: "var-tradisjon-sider",
+    isDark: true,
+    labelColor: TRADISJON_LABEL_COLOR,
+    left: {
+      type: "single-product-showcase",
+      product: {
+        name: "Ulvik Frukt & Cideri Sider Frå Hardanger Tradisjon",
+        category: "SIDER",
+        bottleImage: "/images/tradisjon-large.png",
+        origin: "Noreg, Vestland, Hardanger",
+        description:
+          "Saftig med god friskheit, fokusert preg av mogne eple, hint av grøne urter og krydder. Mjuk brus.",
+        availability: "Kan bestillast til alle butikkar",
+        storeLinkText: "Vis butikkar med varen på lager",
+        delivery: "Post/Levering: Kan bestillast",
+        foodPairingsAndTaste: [
+          { icon: "AperitiffIcon", text: "APERITIFF" },
+          { icon: "SkalldyrIcon", text: "SKALLDYR" },
+          { icon: "FiskIcon", text: "FISK" },
+          { icon: "FyldeIcon", text: "FYLDE" },
+          { icon: "FriskhetIcon", text: "FRISKHEIT" },
+          { icon: "SodmeIcon", text: "SØDME" },
+        ],
+      },
+    },
+    right: { type: "empty-pane-for-single-product" },
+  },
+  {
+    id: "var-gravenstein-sider",
+    isDark: true,
+    labelColor: GRAVENSTEIN_LABEL_COLOR,
+    left: {
+      type: "single-product-showcase",
+      product: {
+        name: "Ulvik Sider frå Hardanger Gravenstein",
+        category: "SIDER",
+        bottleImage: "/images/gravenstein-large.png",
+        origin: "Noreg, Vestland, Hardanger",
+        description:
+          "Fyldig, vinøs og god sødme. Svakt syrleg, lang ettersmak med smak av mandel.",
+        availability: "Kan bestillast til alle butikkar",
+        storeLinkText: "Vis butikkar med varen på lager",
+        delivery: "Post/Levering: Kan bestillast",
+        foodPairingsAndTaste: [
+          { icon: "AperitiffIcon", text: "APERITIFF" },
+          { icon: "FiskIcon", text: "FISK" },
+          { icon: "LystKjøttIcon", text: "LYST KJØT" },
+          { icon: "FyldeIcon", text: "FYLDE" },
+          { icon: "FriskhetIcon", text: "FRISKHEIT" },
+          { icon: "SodmeIcon", text: "SØDME" },
+        ],
+      },
+    },
+    right: { type: "empty-pane-for-single-product" },
+  },
+  {
+    id: "alle-produkta",
+    isDark: true,
+    left: {
+      type: "product-grid",
+      items: [
+        {
+          type: "image",
+          content: "/images/gravenstein-large.png",
+          alt: "Gravenstein Sider",
+          title: "Gravenstein",
+          description: "Fyldig, vinøs og god sødme.",
+          details: "8% alkohol • 9 g/l sukker",
+        },
+        {
+          type: "image",
+          content: "/images/tradisjon-large.png",
+          alt: "Tradisjon Sider",
+          title: "Tradisjon",
+          description: "Saftig med god friskheit.",
+          details: "8% alkohol • 13,2 g/l sukker",
+        },
+        {
+          type: "image",
+          content: "/images/stille-stunder.png",
+          alt: "Stille Stunder",
+          title: "Stille Stunder",
+          description: "Konsentrert eple.",
+          details: "8% alkohol • Under 3 g/l sukker",
+        },
+        {
+          type: "image",
+          content: "/images/hylleblomsider.png",
+          alt: "Hylleblomsider",
+          title: "Hylleblomsider",
+          description: "Søtleg med god syrebalanse.",
+          details: "7,5% alkohol • 36 g/l sukker",
+        },
+        {
+          type: "image",
+          content: "/images/svartsurbaer.png",
+          alt: "Svartsurbær",
+          title: "Svartsurbær",
+          description: "Lang ettersmak av eple.",
+          details: "8% alkohol • Under 3 g/l sukker",
+        },
+        {
+          type: "image",
+          content: "/images/cider-bottles-outdoor.png",
+          alt: "Sider utandørs",
+          title: "Eplemost",
+          description: "Naturleg eplemost.",
+          details: "Alkoholfri • Naturleg søt",
+        },
+      ],
+    },
+    right: {
+      type: "content",
+      title: "Heile Kolleksjonen",
+      subtitle: "Seks unike sider",
+      description:
+        "Opplev heile spekteret av våre handverksider. Frå den klassiske Gravenstein til den innovative Svartsurbær - kvar flaske fortel si eiga historie om Hardanger sitt terroir og vår lidenskap for kvalitet.",
+      animationDelay: 0.6,
+    },
+  },
+  {
+    id: "kontakt",
+    isDark: false,
+    left: { type: "map-widget" },
+    right: {
+      type: "content",
+      title: "Velkomen til Hakastad",
+      description:
+        "Me tek gjerne imot besøk på garden. Opplev den vakre naturen i Hardanger og smak på våre handverksprodukt. Kontakt oss for omvising eller for å bestilla produkta våre.",
+      contact: {
+        name: "Asbjørn Børsheim",
+        address: "Apalvegen 78, 5730 Ulvik",
+        phone: "+47 91 10 22 15",
+        email: "asbjorn.borsheim@ulvik.org",
+        org: "Org. 983 035 256",
+      },
+      cta: "Send melding",
+      animationDelay: 0.6,
+    },
+  },
+];
 
-        className={cn("object-contain transition-all duration-1000 ease-out drop-shadow-2xl", activeSection === sectionIndex ? "scale-100 translate-y-0 rotate-0" : "scale-75 translate-y-10 -rotate-10 translate-x-10")}
-const SingleProductShowcaseFull = ({ product, activeSection, sectionIndex, isDarkMode }: { product: SectionContentProduct; activeSection: number; sectionIndex: number; isDarkMode: boolean }) => { const textColor = isDarkMode ? "text-gray-300" : "text-gray-700"; const headingColor = isDarkMode ? "text-white" : "text-black"; const subHeadingColor = isDarkMode ? "text-amber-400" : "text-amber-600"; const renderIcon = (iconName: string | undefined) => { switch (iconName) { case "AperitiffIcon": return <AperitiffIcon />; case "SkalldyrIcon": return <SkalldyrIcon />; case "FiskIcon": return <FiskIcon />; case "LystKjøttIcon": return <DrikkeIkon />; case "FyldeIcon": return <FyldeIcon />; case "FriskhetIcon": return <FriskhetIcon />; case "SodmeIcon": return <SodmeIcon />; default: return <DrikkeIkon />; } }; return ( <div className={cn("flex h-full w-full transition-opacity duration-1000 ease-out", activeSection === sectionIndex ? "opacity-100" : "opacity-0", "max-[768px]:flex-col")}> <div className="w-1/2 max-[768px]:w-full max-[768px]:h-1/2 flex items-center justify-center p-4 md:p-8 relative overflow-hidden"> <Image src={product.bottleImage || "/placeholder.svg"} alt={product.name} width={285} height={855} className={cn("object-contain transition-all duration-[1800ms] ease-out drop-shadow-2xl", activeSection === sectionIndex ? "scale-100 translate-y-0 rotate-0" : "scale-75 translate-y-10 -rotate-10 translate-x-10")} /> </div> <div className={cn("w-1/2 max-[768px]:w-full max-[768px]:h-auto overflow-y-auto flex items-center justify-center", textColor)}> <div className="w-full max-w-md lg:max-w-lg xl:max-w-xl mx-auto px-6 md:px-8 lg:px-10 py-8 md:py-12 space-y-5 md:space-y-6"> <p className={`text-xs md:text-sm uppercase tracking-wider font-medium ${subHeadingColor}`}>{product.category}</p> <h1 className={`text-3xl md:text-4xl font-spectral font-light ${headingColor}`}>{product.name}</h1> <p className={`text-xs ${textColor}`}>{product.origin}</p> <p className="text-base md:text-lg leading-relaxed">{product.description}</p> {product.vinmonopoletLink && ( <a href={product.vinmonopoletLink} target="_blank" rel="noopener noreferrer" title="Kjøp på Vinmonopolet" className={cn( "inline-block mt-4 p-2 rounded-md transition-all duration-300 group focus:outline-none focus:ring-2", isDarkMode ? "bg-gray-700 hover:bg-gray-600 focus:ring-amber-400" : "bg-gray-100 hover:bg-gray-200 focus:ring-amber-600 border border-gray-300" )} > <Image src="/icons/vinmonopolet.png" alt="Vinmonopolet ikon" width={36} height={36} className="opacity-80 group-hover:opacity-100 transition-opacity" /> </a> )} <hr className={cn("my-4 md:my-6", isDarkMode ? "border-gray-700" : "border-gray-300")} /> {product.foodPairingsAndTaste && product.foodPairingsAndTaste.length > 0 && ( <div className="grid grid-cols-2 gap-x-4 md:gap-x-6 gap-y-2 text-xs md:text-sm"> {product.foodPairingsAndTaste.map((item: any, idx: number) => ( <div key={idx} className="flex items-center"> {renderIcon(item.icon)} <span className="ml-1">{item.text}</span> </div> ))} </div> )} </div> </div> </div> ); };
-const VideoPlayerFull = ({ src, poster }: { src: string; poster: string;}) => { const [isPlaying, setIsPlaying] = useState(false); const [isMuted, setIsMuted] = useState(true); const [showControls, setShowControls] = useState(false); const videoRef = useRef<HTMLVideoElement>(null); const togglePlay = () => { if (videoRef.current) { if (isPlaying) videoRef.current.pause(); else videoRef.current.play(); setIsPlaying(!isPlaying); } }; const toggleMute = () => { if (videoRef.current) { videoRef.current.muted = !isMuted; setIsMuted(!isMuted); } }; return ( <div className="group relative h-full w-full overflow-hidden" onMouseEnter={() => setShowControls(true)} onMouseLeave={() => setShowControls(false)}> <video ref={videoRef} className="h-full w-full object-cover" poster={poster} muted={isMuted} loop playsInline> <source src={src} type="video/mp4" /> </video> <div className={cn("absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 transition-opacity duration-300", showControls || !isPlaying ? "opacity-100" : "opacity-0")}> <div className="flex items-center space-x-4"> <Button variant="ghost" size="lg" className="h-16 w-16 rounded-full bg-white bg-opacity-80 text-amber-700 hover:bg-white hover:bg-opacity-100" onClick={togglePlay}> {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8 pl-1" />} </Button> <Button variant="ghost" size="sm" className="h-10 w-10 rounded-full bg-white bg-opacity-80 text-amber-700 hover:bg-white hover:bg-opacity-100" onClick={toggleMute}> {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />} </Button> </div> </div> </div> ) };
-const LogoContentFull = ({ logoSrc, subtitle, description, cta, activeSection, sectionIndex, animationDelay, isDarkMode }: { logoSrc: string; subtitle: string; description: string | JSX.Element; cta?: string; activeSection: number; sectionIndex: number; animationDelay: number; isDarkMode: boolean }) => { return ( <div className="flex h-full w-full flex-col items-center justify-center text-left"> <div className="w-full max-w-xl lg:max-w-2xl xl:max-w-3xl mx-auto px-6 md:px-8 lg:px-12 py-12 md:py-20"> <div className={cn("transform transition-all duration-1200 ease-out", activeSection === sectionIndex ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0")} style={{ transitionDelay: `${animationDelay * 1000}ms` }}> <div className="mb-8 animate-scaleIn flex justify-center md:justify-start"> <Image src={logoSrc || "/placeholder.svg"} alt="Ulvik Frukt & Cideri" width={280} height={105} className="h-auto w-auto transition-all duration-300 hover:scale-102" /> </div> <h3 className={cn("mb-4 md:mb-6 text-xs md:text-sm font-spectral font-light uppercase tracking-widest animate-fadeIn transition-colors duration-500", isDarkMode ? "text-amber-300" : "text-amber-700")}> {subtitle} </h3> {typeof description === 'string' ? <p className={cn("mb-6 md:mb-8 text-base md:text-lg leading-relaxed animate-slideInUp transition-colors duration-500", isDarkMode ? "text-gray-200" : "text-gray-600")}>{description}</p> : <div className={cn("animate-slideInUp transition-colors duration-500", isDarkMode ? "text-gray-200" : "text-gray-600")}>{description}</div>} {cta && <Button variant="outline" className={cn("border-amber-600 text-amber-600 transition-all duration-300 hover:scale-105 hover:shadow-lg animate-slideInUp", isDarkMode ? "hover:bg-amber-500 hover:text-white border-amber-500 text-amber-400" : "hover:bg-amber-600 hover:text-white")}> {cta} </Button>} </div> </div> </div> ) };
-const ProductGridFull = ({ items, activeSection, sectionIndex }: { items: SectionContentItem[]; activeSection: number; sectionIndex: number }) => { return ( <div className="h-full w-full overflow-y-auto flex items-center"> <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-6 w-full"> {items.map((item, i) => ( <div key={i} className={cn( "group relative flex flex-col items-center p-3 md:p-4 bg-black bg-opacity-20 backdrop-blur-sm rounded-lg shadow-sm hover:shadow-md transition-all duration-500 border border-white border-opacity-10", activeSection === sectionIndex ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0", )} style={{ transitionDelay: `${activeSection === sectionIndex ? i * 100 : 0}ms` }} > <div className="relative h-32 w-20 md:h-40 md:w-28 mb-2 md:mb-3"> <Image src={item.src || "/placeholder.svg"} alt={item.alt} fill className="object-contain transition-transform duration-300 group-hover:scale-105" /> </div> <h4 className="text-xs md:text-sm font-spectral font-medium text-white mb-1 text-center">{item.title}</h4> <p className="text-xs text-gray-300 mb-1 md:mb-2 text-center leading-tight">{item.description}</p> <p className="text-xs text-amber-400 font-medium">{item.details}</p> </div> ))} </div> </div> ) };
-const ImageGridComponentFull = ({ items, activeSection, sectionIndex }: { items: SectionContentItem[]; activeSection: number; sectionIndex: number }) => { return ( <div className="flex h-full w-full items-center justify-center p-4 md:p-8 lg:p-12"> <div className="grid grid-cols-2 grid-rows-2 gap-3 md:gap-4 w-full max-w-lg lg:max-w-xl aspect-[4/3] md:aspect-square"> {items.map((item, i) => ( <div key={i} className={cn( "relative w-full h-full overflow-hidden rounded-md md:rounded-lg shadow-lg transition-all duration-700 ease-out group", activeSection === sectionIndex ? "opacity-100 scale-100" : "opacity-0 scale-90", )} style={{ transitionDelay: `${activeSection === sectionIndex ? 100 + i * 150 : 0}ms` }} > <Image src={item.src || "/placeholder.svg"} alt={item.alt} fill sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw" className="object-cover transition-transform duration-500 ease-out group-hover:scale-110" /> <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div> </div> ))} </div> </div> ) };
+const SingleProductShowcase = ({
+  product,
+  activeSection,
+  sectionIndex,
+  isDarkMode,
+}: {
+  product: any;
+  activeSection: number;
+  sectionIndex: number;
+  isDarkMode: boolean;
+}) => {
+  const textColor = isDarkMode ? "text-gray-300" : "text-gray-700";
+  const headingColor = isDarkMode ? "text-white" : "text-black";
+  const subHeadingColor = isDarkMode ? "text-amber-400" : "text-amber-600";
+  const linkColor = isDarkMode
+    ? "text-amber-300 hover:text-amber-200"
+    : "text-amber-600 hover:text-amber-700";
+
+  const renderIcon = (iconName: string | undefined) => {
+    switch (iconName) {
+      case "AperitiffIcon":
+        return <AperitiffIcon />;
+      case "SkalldyrIcon":
+        return <SkalldyrIcon />;
+      case "FiskIcon":
+        return <FiskIcon />;
+      case "LystKjøttIcon":
+        return <DrikkeIkon />; // Placeholder for LystKjøttIcon
+      case "FyldeIcon":
+        return <FyldeIcon />;
+      case "FriskhetIcon":
+        return <FriskhetIcon />;
+      case "SodmeIcon":
+        return <SodmeIcon />;
+      default:
+        return <DrikkeIkon />;
+    }
+  };
+
+  return (
+    <div
+      className={cn(
+        "flex h-full w-full transition-opacity duration-1000 ease-out",
+        activeSection === sectionIndex ? "opacity-100" : "opacity-0",
+        isDarkMode ? "bg-black" : "bg-[#f8f5f0]",
+        "max-[768px]:flex-col",
+      )}
+    >
+      <div className="w-1/2 max-[768px]:w-full max-[768px]:h-1/2 flex items-center justify-center p-8 relative overflow-hidden">
+        <Image
+          src={
+            product.bottleImage ||
+            "/placeholder.svg?height=900&width=300&text=Bottle"
+          }
+          alt={product.name}
+          width={285}
+          height={855}
+          className={cn(
+            "object-contain transition-all duration-1000 ease-out drop-shadow-2xl",
+            activeSection === sectionIndex
+              ? "scale-100 translate-y-0 rotate-0"
+              : "scale-75 translate-y-10 -rotate-10 translate-x-10",
+          )}
+        />
+      </div>
+      <div
+        className={cn(
+          "w-1/2 max-[768px]:w-full max-[768px]:h-auto overflow-y-auto p-8 md:p-12 space-y-6",
+          textColor,
+        )}
+      >
+        <p className={`text-sm uppercase tracking-wider ${subHeadingColor}`}>
+          {product.category}
+        </p>
+        <h1 className={`text-3xl md:text-4xl font-light ${headingColor}`}>
+          {product.name}
+        </h1>
+        <p className={`text-xs ${textColor}`}>{product.origin}</p>
+        <p className="text-lg leading-relaxed">{product.description}</p>
+
+        <div className="space-y-2 text-sm mt-4">
+          <div className="flex items-center">
+            <MapPin size={16} className="mr-2" />
+            <span>
+              {product.availability}.{" "}
+              <a href="#" className={linkColor}>
+                {product.storeLinkText}
+              </a>
+            </span>
+          </div>
+          <div className="flex items-center">
+            <ShoppingBag size={16} className="mr-2" />
+            <span>{product.delivery}</span>
+          </div>
+        </div>
+        <hr
+          className={cn(
+            "my-6",
+            isDarkMode ? "border-gray-700" : "border-gray-300",
+          )}
+        />
+
+        {product.foodPairingsAndTaste &&
+          product.foodPairingsAndTaste.length > 0 && (
+            <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
+              {product.foodPairingsAndTaste.map((item: any, idx: number) => (
+                <div key={idx} className="flex items-center">
+                  {renderIcon(item.icon)} <span>{item.text}</span>
+                </div>
+              ))}
+            </div>
+          )}
+      </div>
+    </div>
+  );
+};
+
+const VideoPlayer = ({
+  src,
+  poster,
+  alt,
+}: {
+  src: string;
+  poster: string;
+  alt: string;
+}) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+  const [showControls, setShowControls] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const togglePlay = () => {
+    if (videoRef.current) {
+      if (isPlaying) videoRef.current.pause();
+      else videoRef.current.play();
+      setIsPlaying(!isPlaying);
+    }
+  };
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
+
+  return (
+    <div
+      className="group relative h-full w-full overflow-hidden"
+      onMouseEnter={() => setShowControls(true)}
+      onMouseLeave={() => setShowControls(false)}
+    >
+      <video
+        ref={videoRef}
+        className="h-full w-full object-cover"
+        poster={poster}
+        muted={isMuted}
+        loop
+        playsInline
+      >
+        <source src={src} type="video/mp4" />
+      </video>
+      <div
+        className={cn(
+          "absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 transition-opacity duration-300",
+          showControls || !isPlaying ? "opacity-100" : "opacity-0",
+        )}
+      >
+        <div className="flex items-center space-x-4">
+          <Button
+            variant="ghost"
+            size="lg"
+            className="h-16 w-16 rounded-full bg-white bg-opacity-80 text-amber-700 hover:bg-white hover:bg-opacity-100"
+            onClick={togglePlay}
+          >
+            {isPlaying ? (
+              <Pause className="h-8 w-8" />
+            ) : (
+              <Play className="h-8 w-8 pl-1" />
+            )}
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-10 w-10 rounded-full bg-white bg-opacity-80 text-amber-700 hover:bg-white hover:bg-opacity-100"
+            onClick={toggleMute}
+          >
+            {isMuted ? (
+              <VolumeX className="h-5 w-5" />
+            ) : (
+              <Volume2 className="h-5 w-5" />
+            )}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const LogoContent = ({
+  logoSrc,
+  subtitle,
+  description,
+  cta,
+  activeSection,
+  sectionIndex,
+  animationDelay,
+  isDarkMode,
+}: {
+  logoSrc: string;
+  subtitle: string;
+  description: string;
+  cta: string;
+  activeSection: number;
+  sectionIndex: number;
+  animationDelay: number;
+  isDarkMode: boolean;
+}) => {
+  return (
+    <div className="flex h-full w-full flex-col items-center justify-center p-6 max-[375px]:p-4 text-left">
+      <div
+        className={cn(
+          "transform transition-all duration-1200 ease-out",
+          activeSection === sectionIndex
+            ? "translate-y-0 opacity-100"
+            : "translate-y-12 opacity-0",
+        )}
+        style={{ transitionDelay: `${animationDelay * 1000}ms` }}
+      >
+        <div className="mb-8 animate-scaleIn">
+          <Image
+            src={logoSrc || "/placeholder.svg?height=120&width=320&text=Logo"}
+            alt="Ulvik Frukt & Cideri"
+            width={320}
+            height={120}
+            className="h-auto w-auto transition-all duration-300 hover:scale-102"
+          />
+        </div>
+        <h3
+          className={cn(
+            "mb-6 text-sm font-light uppercase tracking-widest animate-fadeIn transition-colors duration-500",
+            isDarkMode ? "text-amber-400" : "text-amber-700",
+          )}
+        >
+          {subtitle}
+        </h3>
+        <p
+          className={cn(
+            "mb-8 max-w-lg text-lg leading-relaxed animate-slideInUp transition-colors duration-500",
+            isDarkMode ? "text-gray-300" : "text-gray-600",
+          )}
+        >
+          {description}
+        </p>
+        <Button
+          variant="outline"
+          className="border-amber-700 text-amber-700 transition-all duration-300 hover:scale-105 hover:bg-amber-700 hover:text-white hover:shadow-lg animate-slideInUp"
+        >
+          {cta}
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+const ProductGrid = ({
+  items,
+  activeSection,
+  sectionIndex,
+}: {
+  items: any[];
+  activeSection: number;
+  sectionIndex: number;
+}) => {
+  return (
+    <div className="h-full w-full p-8 overflow-y-auto">
+      <div className="grid grid-cols-2 gap-6 max-h-full">
+        {items.map((item, i) => (
+          <div
+            key={i}
+            className={cn(
+              "group relative flex flex-col items-center p-3 max-[375px]:p-2 bg-black bg-opacity-20 backdrop-blur-sm rounded-lg shadow-sm hover:shadow-md transition-all duration-500 border border-white border-opacity-10",
+              activeSection === sectionIndex
+                ? "translate-y-0 opacity-100"
+                : "translate-y-4 opacity-0",
+            )}
+            style={{ transitionDelay: `${i * 100}ms` }}
+          >
+            <div className="relative h-40 w-28 mb-3">
+              <Image
+                src={
+                  item.content ||
+                  "/placeholder.svg?height=160&width=112&text=Product"
+                }
+                alt={item.alt}
+                fill
+                className="object-contain transition-transform duration-300 group-hover:scale-105"
+              />
+            </div>
+            <h4 className="text-sm font-medium text-white mb-1 text-center">
+              {item.title}
+            </h4>
+            <p className="text-xs text-gray-300 mb-2 text-center leading-tight">
+              {item.description}
+            </p>
+            <p className="text-xs text-amber-400 font-medium mb-1">
+              {item.details}
+            </p>
+            {item.pairing && (
+              <p className="text-xs text-gray-400 text-center">
+                {item.pairing}
+              </p>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export default function SplitScroll({ onSectionChange }: SplitScrollProps) {
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [hoveredSectionName, setHoveredSectionName] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
   const parallaxRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const currentSectionDefinition = sections[activeSectionIndex];
-  const isCurrentSectionDarkOverall = !!currentSectionDefinition?.isDark;
-  const currentSectionBgClass = currentSectionDefinition?.customBgClass || (isCurrentSectionDarkOverall ? "bg-brandDark" : "bg-brandBeige");
 
-  const scrollToSection = useCallback( (index: number) => { if (isScrolling || index === activeSectionIndex) return; setIsScrolling(true); setTimeout(() => { const sectionElement = sectionRefs.current[index]; if (sectionElement && containerRef.current) { containerRef.current.scrollTo({ top: sectionElement.offsetTop, behavior: "smooth" }); window.history.pushState(null, "", `#${sections[index].id}`); } setTimeout(() => { setIsScrolling(false); }, 700); }, 100); }, [activeSectionIndex, isScrolling], );
-  useEffect(() => { const container = containerRef.current; if (!container) return; const handleScroll = () => { if (!container) return; const scrollTop = container.scrollTop; const scrollHeight = container.scrollHeight - container.clientHeight; const progress = scrollHeight > 0 ? scrollTop / scrollHeight : 0; setScrollProgress(progress); parallaxRefs.current.forEach((ref, parallaxElementIndex) => { if (ref) { const sectionIndexForParallax = Math.floor(parallaxElementIndex / 2); const currentSectionRef = sectionRefs.current[sectionIndexForParallax]; const sectionTop = currentSectionRef?.offsetTop || 0; const offset = (scrollTop - sectionTop) * 0.3; ref.style.transform = `translateY(${offset}px)`; } }); if (isScrolling) return; const viewportHeight = window.innerHeight; let newActiveSection = activeSectionIndex; for (let i = 0; i < sectionRefs.current.length; i++) { const section = sectionRefs.current[i]; if (section) { const sectionTop = section.offsetTop; const sectionHeight = section.offsetHeight; if ( scrollTop >= sectionTop - viewportHeight * 0.5 && scrollTop < sectionTop + sectionHeight - viewportHeight * 0.5 ) { newActiveSection = i; break; } if ( i === sectionRefs.current.length - 1 && scrollTop + viewportHeight >= scrollHeight + viewportHeight - 10 ) { newActiveSection = i; } } } if (newActiveSection !== activeSectionIndex) { setActiveSectionIndex(newActiveSection); if (!isScrolling) window.history.pushState(null, "", `#${sections[newActiveSection].id}`); } }; container.addEventListener("scroll", handleScroll, { passive: true }); handleScroll(); const hash = window.location.hash.replace("#", ""); if (hash) { const index = sections.findIndex((section) => section.id === hash); if (index !== -1 && index !== activeSectionIndex) setTimeout(() => scrollToSection(index), 500); } return () => container.removeEventListener("scroll", handleScroll); }, [activeSectionIndex, isScrolling, scrollToSection]);
-  useEffect(() => { const currentSection = sections[activeSectionIndex]; if (currentSection) { onSectionChange({ activeSectionIndex: activeSectionIndex, currentLabelColor: currentSection.labelColor || null, isDarkSection: !!currentSection.isDark, }); } }, [activeSectionIndex, onSectionChange]);
+  const currentSectionData = sections[activeSectionIndex];
+  const isCurrentSectionDark = !!currentSectionData?.isDark;
+
+  const scrollToSection = useCallback(
+    (index: number) => {
+      if (isScrolling || index === activeSectionIndex) return;
+      setIsLoading(true);
+      setIsScrolling(true);
+      setTimeout(() => {
+        const sectionElement = sectionRefs.current[index];
+        if (sectionElement && containerRef.current) {
+          containerRef.current.scrollTo({
+            top: sectionElement.offsetTop,
+            behavior: "smooth",
+          });
+          window.history.pushState(null, "", `#${sections[index].id}`);
+        }
+        setTimeout(() => {
+          setIsLoading(false);
+          setIsScrolling(false);
+        }, 1200);
+      }, 300);
+    },
+    [activeSectionIndex, isScrolling],
+  );
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const handleScroll = () => {
+      if (!container) return;
+      const scrollTop = container.scrollTop;
+      const scrollHeight = container.scrollHeight - container.clientHeight;
+      const progress = scrollHeight > 0 ? scrollTop / scrollHeight : 0;
+      setScrollProgress(progress);
+
+      parallaxRefs.current.forEach((ref, parallaxElementIndex) => {
+        if (ref) {
+          const sectionIndexForParallax = Math.floor(parallaxElementIndex / 2);
+          const currentSectionRef =
+            sectionRefs.current[sectionIndexForParallax];
+          const sectionTop = currentSectionRef?.offsetTop || 0;
+          const offset = (scrollTop - sectionTop) * 0.3;
+          ref.style.transform = `translateY(${offset}px)`;
+        }
+      });
+
+      if (isScrolling) return;
+      const viewportHeight = window.innerHeight;
+      let newActiveSection = activeSectionIndex;
+
+      for (let i = 0; i < sectionRefs.current.length; i++) {
+        const section = sectionRefs.current[i];
+        if (section) {
+          const sectionTop = section.offsetTop;
+          const sectionHeight = section.offsetHeight;
+          if (
+            scrollTop >= sectionTop - viewportHeight * 0.5 &&
+            scrollTop < sectionTop + sectionHeight - viewportHeight * 0.5
+          ) {
+            newActiveSection = i;
+            break;
+          }
+          if (
+            i === sectionRefs.current.length - 1 &&
+            scrollTop + viewportHeight >= scrollHeight + viewportHeight - 10
+          ) {
+            newActiveSection = i;
+          }
+        }
+      }
+      if (newActiveSection !== activeSectionIndex) {
+        setActiveSectionIndex(newActiveSection);
+        if (!isScrolling)
+          window.history.pushState(
+            null,
+            "",
+            `#${sections[newActiveSection].id}`,
+          );
+      }
+    };
+
+    container.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    const hash = window.location.hash.replace("#", "");
+    if (hash) {
+      const index = sections.findIndex((section) => section.id === hash);
+      if (index !== -1 && index !== activeSectionIndex)
+        setTimeout(() => scrollToSection(index), 500);
+    }
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, [activeSectionIndex, isScrolling, scrollToSection]);
+
+  useEffect(() => {
+    const currentSection = sections[activeSectionIndex];
+    if (currentSection) {
+      onSectionChange({
+        activeSectionIndex: activeSectionIndex,
+        currentLabelColor: currentSection.labelColor || null,
+        isDarkSection: !!currentSection.isDark,
+      });
+    }
+  }, [activeSectionIndex, onSectionChange]);
 
   return (
     <>
-      <div className="fixed left-0 top-0 z-40 h-1 bg-amber-600 transition-all duration-300" style={{ width: `${scrollProgress * 100}%` }} />
-      <div ref={containerRef} className={cn( "h-full w-full overflow-y-auto overflow-x-hidden scroll-smooth relative transition-colors duration-700", currentSectionBgClass, )} style={{ scrollSnapType: "y mandatory" }} >
+      {isLoading && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black bg-opacity-50">
+          <div className="flex flex-col items-center space-y-4">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-amber-700 border-t-transparent"></div>
+            <p className="text-white">Lastar...</p>
+          </div>
+        </div>
+      )}
+      <div
+        className="fixed left-0 top-0 z-40 h-1 bg-amber-700 transition-all duration-300"
+        style={{ width: `${scrollProgress * 100}%` }}
+      />
+      <div
+        ref={containerRef}
+        className={cn(
+          "h-full w-full overflow-y-auto overflow-x-hidden scroll-smooth relative transition-colors duration-700",
+          isCurrentSectionDark ? "bg-black" : "bg-[#f8f5f0]",
+        )}
+        style={{ scrollSnapType: "y mandatory" }}
+      >
         <div className="fixed left-4 md:left-6 top-1/2 z-30 -translate-y-1/2 transform">
           <div className="flex flex-col space-y-3">
             {sections.map((section, index) => {
               const isActive = index === activeSectionIndex;
               const isPassed = index < activeSectionIndex;
-              const sectionIsEffectivelyDark = !!section.isDark;
-              let dotClasses = "h-2.5 w-2.5 rounded-full border-2 transition-all duration-300 ease-out hover:scale-110 relative group";
+
+              let dotBgColor = "bg-gray-300 dark:bg-gray-600";
               if (isActive) {
-                dotClasses += sectionIsEffectivelyDark ? " bg-amber-400 border-amber-400" : " bg-amber-600 border-amber-600";
-                dotClasses += " ring-1 ring-offset-1";
-                dotClasses += sectionIsEffectivelyDark ? " ring-amber-300 ring-offset-brandDark" : " ring-amber-700 ring-offset-brandBeige";
+                dotBgColor = "bg-amber-600";
               } else if (isPassed) {
-                dotClasses += sectionIsEffectivelyDark ? " bg-amber-400/60 border-amber-400/60" : " bg-amber-600/60 border-amber-600/60";
-              } else {
-                dotClasses += " bg-transparent";
-                dotClasses += sectionIsEffectivelyDark ? " border-gray-500 hover:border-amber-400" : " border-gray-400 hover:border-amber-600";
+                dotBgColor = "bg-amber-600 opacity-50";
               }
+
               return (
                 <button
                   key={section.id}
                   onClick={() => scrollToSection(index)}
-                  onMouseEnter={() => setHoveredSectionName(section.name)}
-                  onMouseLeave={() => setHoveredSectionName(null)}
-                  onTouchStart={() => setHoveredSectionName(section.name)}
-                  onTouchEnd={() => setTimeout(() => setHoveredSectionName(null), 1500)}
-                  aria-label={`Gå til seksjon ${section.name}`}
-                  className={cn(dotClasses)}
-                >
-                  {hoveredSectionName === section.name && (
-                    <span
-                      className={cn(
-                        "absolute left-full ml-2.5 -mt-1.5 whitespace-nowrap rounded px-1.5 py-0.5 text-[10px] shadow opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none transform -translate-y-1/2 top-1/2",
-                        sectionIsEffectivelyDark ? "bg-gray-800/80 text-white backdrop-blur-sm" : "bg-white/80 text-gray-700 backdrop-blur-sm border border-gray-200"
-                      )}
-                    >
-                      {section.name}
-                    </span>
+                  aria-label={`Gå til seksjon ${section.id.replace(/-/g, " ")}`}
+                  className={cn(
+                    "h-2 w-2 rounded-full transition-all duration-300 ease-out",
+                    "hover:scale-125",
+                    dotBgColor,
+                    isActive
+                      ? "ring-1 ring-offset-1 ring-amber-500 dark:ring-amber-400"
+                      : "",
                   )}
-                </button>
-              )
+                />
+              );
             })}
           </div>
         </div>
+
         {sections.map((section, index) => {
-          const sectionIsDarkForContent = !!section.isDark;
-          if (section.fullWidthComponent) { return ( <div key={section.id} id={section.id} ref={(el) => (sectionRefs.current[index] = el)} className="h-auto min-h-screen w-full flex items-center justify-center" style={{ scrollSnapAlign: "start" }}> {section.fullWidthComponent()} </div> ) }
+          if (section.fullWidthComponent) {
+            return (
+              <div
+                key={section.id}
+                id={section.id}
+                ref={(el) => (sectionRefs.current[index] = el)}
+                className="h-auto min-h-screen w-full flex items-center justify-center"
+                style={{ scrollSnapAlign: "start" }}
+              >
+                {section.fullWidthComponent()}
+              </div>
+            );
+          }
           return (
-            <div key={section.id} id={section.id} ref={(el) => (sectionRefs.current[index] = el)} className={cn( "flex h-screen w-full transition-all duration-1000 ease-in-out relative", "max-[375px]:flex-col max-[375px]:h-auto max-[375px]:min-h-screen", section.left.type === "single-product-showcase" ? "p-0" : "" )} style={{ scrollSnapAlign: "start" }} >
-              {section.left.type === "single-product-showcase" ? ( <SingleProductShowcaseFull product={section.left.product!} activeSection={activeSectionIndex} sectionIndex={index} isDarkMode={sectionIsDarkForContent} /> ) : (
+            <div
+              key={section.id}
+              id={section.id}
+              ref={(el) => (sectionRefs.current[index] = el)}
+              className={cn(
+                "flex h-screen w-full transition-all duration-1000 ease-in-out relative",
+                "max-[375px]:flex-col max-[375px]:h-auto max-[375px]:min-h-screen",
+                section.left.type === "single-product-showcase" ? "p-0" : "",
+              )}
+              style={{ scrollSnapAlign: "start" }}
+            >
+              {section.left.type === "single-product-showcase" ? (
+                <SingleProductShowcase
+                  product={section.left.product}
+                  activeSection={activeSectionIndex}
+                  sectionIndex={index}
+                  isDarkMode={!!section.isDark}
+                />
+              ) : (
                 <>
-                  <div className={cn( "relative h-full w-1/2 overflow-hidden", "max-[375px]:w-full max-[375px]:h-1/2", "border-r", sectionIsDarkForContent ? (section.customBgClass === 'bg-brandAccentRed' ? "border-red-400/30" : "border-gray-700") : "border-gray-200", "max-[375px]:border-r-0 max-[375px]:border-b" )}>
-                    <div className="w-full h-full flex items-center justify-center">
-                        {section.left.type === "image" && ( <div ref={(el) => (section.left.parallax ? (parallaxRefs.current[index * 2] = el) : null)} className="relative h-full w-full will-change-transform"> <Image src={section.left.content || "/images/generic-farm-product.jpg"} alt={section.left.alt || "Produktbilete"} fill priority={index < 2} className={cn("object-cover transition-transform duration-1000 ease-out", activeSectionIndex === index ? "scale-100" : "scale-105")} /> <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-black/20 opacity-20" /> </div> )}
-                        {section.left.type === "empty-pane" && ( <div className="w-full h-full"></div> )}
-                        {section.left.type === "content" && ( <div className="w-full max-w-xl lg:max-w-2xl xl:max-w-3xl mx-auto px-6 md:px-8 lg:px-12 py-12 md:py-20 text-left"> <div className={cn("transform transition-all duration-1000", activeSectionIndex === index ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0")} style={{ transitionDelay: `${(section.left.animationDelay || 0) * 1000}ms` }}> <h3 className={cn("mb-2 text-xs md:text-sm font-spectral font-light uppercase tracking-widest animate-fadeIn", sectionIsDarkForContent ? "text-amber-300" : "text-amber-700")}>{section.left.subtitle}</h3> <h2 className={cn("mb-4 md:mb-6 text-3xl md:text-4xl font-spectral font-light animate-slideInUp", sectionIsDarkForContent ? "text-white" : "text-gray-900")}>{section.left.title}</h2> {typeof section.left.description === 'string' ? <p className={cn("mb-6 md:mb-8 text-base md:text-lg leading-relaxed animate-slideInUp", sectionIsDarkForContent ? "text-gray-200" : "text-gray-600")}>{section.left.description}</p> : <div className={cn("prose prose-sm md:prose-base max-w-none animate-slideInUp", isCurrentSectionDarkOverall && sectionIsDarkForContent ? "prose-invert" : "", sectionIsDarkForContent ? "text-gray-200" : "text-gray-700")}>{section.left.description}</div>} {section.left.cta && <Button variant="outline" className={cn("transition-all duration-300 hover:scale-105 hover:shadow-lg animate-slideInUp", sectionIsDarkForContent ? "border-amber-500 text-amber-400 hover:bg-amber-500 hover:text-white" : "border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white")}>{section.left.cta}</Button>} </div> </div> )}
-                        {section.left.type === "product-grid" && ( <div className="w-full max-w-xl lg:max-w-2xl xl:max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16 h-full"> <ProductGridFull items={section.left.items || []} activeSection={activeSectionIndex} sectionIndex={index} /> </div> )}
-                        {section.left.type === "map-widget" && <div className="w-full h-full"><MapWidget /></div>}
-                    </div>
+                  <div
+                    className={cn(
+                      "relative h-full w-1/2 overflow-hidden",
+                      "max-[375px]:w-full max-[375px]:h-1/2",
+                      "border-r",
+                      section.isDark ? "border-gray-700" : "border-gray-200",
+                      "max-[375px]:border-r-0 max-[375px]:border-b",
+                    )}
+                  >
+                    {section.left.type === "image" && (
+                      <div
+                        ref={(el) =>
+                          section.left.parallax
+                            ? (parallaxRefs.current[index * 2] = el)
+                            : null
+                        }
+                        className="relative h-full w-full will-change-transform"
+                      >
+                        <Image
+                          src={
+                            section.left.content ||
+                            "/placeholder.svg?height=800&width=600&text=Image"
+                          }
+                          alt={section.left.alt || "Section image"}
+                          fill
+                          priority={index < 2}
+                          className={cn(
+                            "object-cover transition-transform duration-1000 ease-out",
+                            activeSectionIndex === index
+                              ? "scale-100"
+                              : "scale-105",
+                          )}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-black/20 opacity-20" />
+                      </div>
+                    )}
+                    {section.left.type === "content" && (
+                      <div className="flex h-full w-full flex-col items-center justify-center p-6 max-[375px]:p-4 text-right">
+                        <div
+                          className={cn(
+                            "transform transition-all duration-1000",
+                            activeSectionIndex === index
+                              ? "translate-y-0 opacity-100"
+                              : "translate-y-8 opacity-0",
+                          )}
+                          style={{
+                            transitionDelay: `${(section.left.animationDelay || 0) * 1000}ms`,
+                          }}
+                        >
+                          <h3
+                            className={cn(
+                              "mb-2 text-sm font-light uppercase tracking-widest animate-fadeIn transition-colors duration-500",
+                              section.isDark
+                                ? "text-amber-400"
+                                : "text-amber-700",
+                            )}
+                          >
+                            {section.left.subtitle}
+                          </h3>
+                          <h2
+                            className={cn(
+                              "mb-6 text-4xl font-light animate-slideInUp transition-colors duration-500",
+                              section.isDark ? "text-white" : "text-gray-900",
+                            )}
+                          >
+                            {section.left.title}
+                          </h2>
+                          <p
+                            className={cn(
+                              "mb-8 max-w-md animate-slideInUp transition-colors duration-500",
+                              section.isDark
+                                ? "text-gray-300"
+                                : "text-gray-600",
+                            )}
+                          >
+                            {section.left.description}
+                          </p>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "border-amber-700 text-amber-700 transition-all duration-300 hover:scale-105 hover:text-white hover:shadow-lg animate-slideInUp",
+                              section.isDark
+                                ? "hover:bg-amber-500 border-amber-500 text-amber-500"
+                                : "hover:bg-amber-700",
+                            )}
+                          >
+                            {section.left.cta}
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                    {section.left.type === "product-grid" && (
+                      <ProductGrid
+                        items={section.left.items || []}
+                        activeSection={activeSectionIndex}
+                        sectionIndex={index}
+                      />
+                    )}
+                    {section.left.type === "map-widget" && <MapWidget />}
                   </div>
-                  <div className={cn("relative h-full w-1/2 overflow-hidden flex flex-col", "max-[375px]:w-full max-[375px]:h-1/2")}>
-                     <div className="w-full h-full flex items-center justify-center flex-grow">
-                        {section.right.type === "image" && ( <div ref={(el) => (section.right.parallax ? (parallaxRefs.current[index * 2 + 1] = el) : null)} className="relative h-full w-full will-change-transform"> <Image src={section.right.content || "/images/generic-farm-product.jpg"} alt={section.right.alt || "Produktbilete"} fill priority={index < 2} className={cn("object-cover transition-transform duration-1000 ease-out", activeSectionIndex === index ? "scale-100" : "scale-105")} /> <div className="absolute inset-0 bg-gradient-to-l from-transparent via-black/5 to-black/20 opacity-20" /> </div> )}
-                        {section.right.type === "content" && ( <div className="w-full max-w-xl lg:max-w-2xl xl:max-w-3xl mx-auto px-6 md:px-8 lg:px-12 py-12 md:py-20 text-left"> <div className={cn("transform transition-all duration-1000", activeSectionIndex === index ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0")} style={{ transitionDelay: `${(section.right.animationDelay || 0) * 1000}ms` }}> <h3 className={cn("mb-2 text-xs md:text-sm font-spectral font-light uppercase tracking-widest animate-fadeIn", sectionIsDarkForContent ? "text-amber-300" : "text-amber-700")}>{section.right.subtitle}</h3> <h2 className={cn("mb-4 md:mb-6 text-3xl md:text-4xl font-spectral font-light animate-slideInUp", sectionIsDarkForContent ? "text-white" : "text-gray-900")}>{section.right.title}</h2> {typeof section.right.description === 'string' ? <p className={cn("mb-6 md:mb-8 text-base md:text-lg leading-relaxed animate-slideInUp", sectionIsDarkForContent ? "text-gray-200" : "text-gray-600")}>{section.right.description}</p> : <div className={cn("prose prose-sm md:prose-base max-w-none animate-slideInUp", isCurrentSectionDarkOverall && sectionIsDarkForContent ? "prose-invert" : "", sectionIsDarkForContent ? "text-gray-200" : "text-gray-700")}>{section.right.description}</div>} {section.right.contact && ( <div className={cn("mb-6 md:mb-8 space-y-1 md:space-y-2 animate-slideInUp text-sm md:text-base", sectionIsDarkForContent ? "text-gray-300" : "text-gray-700")}> <p className={cn("font-medium font-spectral", sectionIsDarkForContent ? "text-gray-100" : "text-gray-800")}>{section.right.contact.name}</p> <p className="transition-colors duration-300 hover:text-amber-500">{section.right.contact.address}</p> <p className="transition-colors duration-300 hover:text-amber-500">{section.right.contact.phone}</p> <p className="transition-colors duration-300 hover:text-amber-500">{section.right.contact.email}</p> <p className={cn("text-xs", sectionIsDarkForContent ? "text-gray-400" : "text-gray-500")}>{section.right.contact.org}</p> </div> )} {section.right.cta && <Button variant="outline" className={cn("transition-all duration-300 hover:scale-105 hover:shadow-lg animate-slideInUp", sectionIsDarkForContent ? "border-amber-500 text-amber-400 hover:bg-amber-500 hover:text-white" : "border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white")}>{section.right.cta}</Button>} </div> </div> )}
-                        {section.right.type === "logo-content" && ( <LogoContentFull logoSrc={section.right.logoSrc || ""} subtitle={section.right.subtitle || ""} description={section.right.description || ""} cta={section.right.cta} activeSection={activeSectionIndex} sectionIndex={index} animationDelay={section.right.animationDelay || 0} isDarkMode={sectionIsDarkForContent} /> )}
-                        {section.right.type === "image-grid" && ( <ImageGridComponentFull items={section.right.items || []} activeSection={activeSectionIndex} sectionIndex={index} /> )}
-                     </div>
-                    {section.id === "kontakt" && ( <div className="pb-8 md:pb-12 flex justify-center space-x-6 animate-fadeIn"> <a href="https://www.instagram.com/ulvikfruktogcideri/?hl=en" target="_blank" rel="noopener noreferrer" aria-label="Ulvik Frukt & Cideri Instagram" className={cn("transition-colors", sectionIsDarkForContent ? "text-gray-400 hover:text-amber-300" : "text-gray-600 hover:text-amber-700")}><Instagram size={28} /></a> <a href="https://www.facebook.com/UlvikFruktogCideri/" target="_blank" rel="noopener noreferrer" aria-label="Ulvik Frukt & Cideri Facebook" className={cn("transition-colors", sectionIsDarkForContent ? "text-gray-400 hover:text-amber-300" : "text-gray-600 hover:text-amber-700")}><Facebook size={28} /></a> </div> )}
+                  <div
+                    className={cn(
+                      "relative h-full w-1/2 overflow-hidden flex flex-col",
+                      "max-[375px]:w-full max-[375px]:h-1/2",
+                    )}
+                  >
+                    {section.right.type === "image" && (
+                      <div
+                        ref={(el) =>
+                          section.right.parallax
+                            ? (parallaxRefs.current[index * 2 + 1] = el)
+                            : null
+                        }
+                        className="relative h-full w-full will-change-transform"
+                      >
+                        <Image
+                          src={
+                            section.right.content ||
+                            "/placeholder.svg?height=800&width=600&text=Image"
+                          }
+                          alt={section.right.alt || "Section image"}
+                          fill
+                          priority={index < 2}
+                          className={cn(
+                            "object-cover transition-transform duration-1000 ease-out",
+                            activeSectionIndex === index
+                              ? "scale-100"
+                              : "scale-105",
+                          )}
+                        />
+                        <div className="absolute inset-0 h-full bg-gradient-to-l from-transparent via-black/5 to-black/20 opacity-20" />
+                      </div>
+                    )}
+                    {section.right.type === "content" && (
+                      <div className="flex h-full w-full flex-col items-center justify-center p-6 max-[375px]:p-4 text-left flex-grow">
+                        <div
+                          className={cn(
+                            "transform transition-all duration-1000",
+                            activeSectionIndex === index
+                              ? "translate-y-0 opacity-100"
+                              : "translate-y-8 opacity-0",
+                          )}
+                          style={{
+                            transitionDelay: `${(section.right.animationDelay || 0) * 1000}ms`,
+                          }}
+                        >
+                          <h3
+                            className={cn(
+                              "mb-2 text-sm font-light uppercase tracking-widest animate-fadeIn transition-colors duration-500",
+                              section.isDark
+                                ? "text-amber-400"
+                                : "text-amber-700",
+                            )}
+                          >
+                            {section.right.subtitle}
+                          </h3>
+                          <h2
+                            className={cn(
+                              "mb-6 text-4xl font-light animate-slideInUp transition-colors duration-500",
+                              section.isDark ? "text-white" : "text-gray-900",
+                            )}
+                          >
+                            {section.right.title}
+                          </h2>
+                          <p
+                            className={cn(
+                              "mb-8 max-w-md animate-slideInUp transition-colors duration-500",
+                              section.isDark
+                                ? "text-gray-300"
+                                : "text-gray-600",
+                            )}
+                          >
+                            {section.right.description}
+                          </p>
+                          {section.right.contact && (
+                            <div
+                              className={cn(
+                                "mb-8 space-y-2 animate-slideInUp",
+                                section.isDark
+                                  ? "text-gray-400"
+                                  : "text-gray-600",
+                              )}
+                            >
+                              <p
+                                className={cn(
+                                  "font-medium",
+                                  section.isDark
+                                    ? "text-gray-200"
+                                    : "text-gray-800",
+                                )}
+                              >
+                                {section.right.contact.name}
+                              </p>
+                              <p className="transition-colors duration-300 hover:text-amber-700">
+                                {section.right.contact.address}
+                              </p>
+                              <p className="transition-colors duration-300 hover:text-amber-700">
+                                {section.right.contact.phone}
+                              </p>
+                              <p className="transition-colors duration-300 hover:text-amber-700">
+                                {section.right.contact.email}
+                              </p>
+                              <p
+                                className={cn(
+                                  "text-sm",
+                                  section.isDark
+                                    ? "text-gray-500"
+                                    : "text-gray-500",
+                                )}
+                              >
+                                {section.right.contact.org}
+                              </p>
+                            </div>
+                          )}
+                          {section.right.cta && (
+                            <Button
+                              variant="outline"
+                              className={cn(
+                                "border-amber-700 text-amber-700 transition-all duration-300 hover:scale-105 hover:text-white hover:shadow-lg animate-slideInUp",
+                                section.isDark
+                                  ? "hover:bg-amber-500 border-amber-500 text-amber-500"
+                                  : "hover:bg-amber-700",
+                              )}
+                            >
+                              {section.right.cta}
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    {section.right.type === "logo-content" && (
+                      <div className="flex h-full w-full flex-col items-center justify-center p-6 max-[375px]:p-4 text-left flex-grow">
+                        <LogoContent
+                          logoSrc={section.right.logoSrc || ""}
+                          subtitle={section.right.subtitle || ""}
+                          description={section.right.description || ""}
+                          cta={section.right.cta || ""}
+                          activeSection={activeSectionIndex}
+                          sectionIndex={index}
+                          animationDelay={section.right.animationDelay || 0}
+                          isDarkMode={!!section.isDark}
+                        />
+                      </div>
+                    )}
+                    {section.id === "kontakt" && (
+                      <div className="mt-auto pb-8 md:pb-12 flex justify-center space-x-6 animate-fadeIn">
+                        <a
+                          href="https://www.instagram.com/ulvikfruktogcideri/?hl=en"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Ulvik Frukt & Cideri Instagram"
+                          className={cn(
+                            "transition-colors",
+                            section.isDark
+                              ? "text-gray-400 hover:text-amber-400"
+                              : "text-gray-600 hover:text-amber-700",
+                          )}
+                        >
+                          <Instagram size={28} />
+                        </a>
+                        <a
+                          href="https://www.facebook.com/UlvikFruktogCideri/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label="Ulvik Frukt & Cideri Facebook"
+                          className={cn(
+                            "transition-colors",
+                            section.isDark
+                              ? "text-gray-400 hover:text-amber-400"
+                              : "text-gray-600 hover:text-amber-700",
+                          )}
+                        >
+                          <Facebook size={28} />
+                        </a>
+                      </div>
+                    )}
                   </div>
                 </>
               )}
             </div>
-          )
+          );
         })}
       </div>
     </>
-  )
+  );
 }
