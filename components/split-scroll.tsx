@@ -758,18 +758,43 @@ export default function SplitScroll({
             {sections.map((section, index) => {
               const isActive = index === activeSectionIndex;
               const isPassed = index <= activeSectionIndex;
+              const sectionName = sectionNames[section.id] || section.id;
+
+              // Use same color logic as logo
+              const dotColor = activeLabelColor
+                ? activeLabelColor
+                : isDarkSection
+                  ? "#FFFFFF"
+                  : "#000000";
 
               return (
-                <button
-                  key={section.id}
-                  onClick={() => scrollToSection(index)}
-                  aria-label={`Gå til seksjon ${section.id.replace(/-/g, " ")}`}
-                  className={cn(
-                    "h-3 w-3 rounded-full transition-all duration-300 border-2 border-black",
-                    isPassed ? "bg-black" : "bg-transparent",
-                    "hover:bg-black",
-                  )}
-                />
+                <div key={section.id} className="relative group">
+                  <button
+                    onClick={() => scrollToSection(index)}
+                    aria-label={`Gå til seksjon ${sectionName}`}
+                    className={cn(
+                      "h-3 w-3 rounded-full transition-all duration-300 border-2",
+                      "hover:scale-110",
+                    )}
+                    style={{
+                      borderColor: dotColor,
+                      backgroundColor: isPassed ? dotColor : "transparent",
+                    }}
+                  />
+
+                  {/* Tooltip */}
+                  <div className="absolute left-6 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-40">
+                    <div
+                      className="px-2 py-1 text-xs font-medium rounded shadow-lg whitespace-nowrap"
+                      style={{
+                        backgroundColor: dotColor,
+                        color: isDarkSection ? "#000000" : "#FFFFFF",
+                      }}
+                    >
+                      {sectionName}
+                    </div>
+                  </div>
+                </div>
               );
             })}
           </div>
