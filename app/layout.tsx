@@ -84,7 +84,7 @@ export default function RootLayout({
   return (
     <html
       lang="nn"
-      className={`${inter.variable} ${spectral.variable} ${playfairDisplay.variable} ${sourceSansPro.variable}`}
+      className={`${inter.variable} ${spectral.variable} ${playfairDisplay.variable} ${sourceSans3.variable}`}
     >
       {/* Ensure no leading/trailing whitespace directly inside <head> */}
       <head>
